@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>9Pilla — Controle de Investimentos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --nanquim:#1C1E1F;--nanquim-mid:#252829;--nanquim-soft:#2E3235;
+  --terra:#D96C4A;--terra-dark:#A84F32;--terra-light:#F0D5CB;
+  --canvas:#F5F2E8;--canvas-mid:#EDE9DC;--canvas-soft:#F9F7F2;
+  --musgo:#3F4F3A;--gold:#C8A951;--gold-light:#FAF3DC;
+  --green:#2A7A4B;--green-light:#D8F0E4;
+  --red:#B83232;--red-light:#FADADD;
+  --gray:#7A8085;--border:rgba(28,30,31,0.12);
+  --font-display:'DM Serif Display',serif;
+  --font-body:'DM Sans',sans-serif;
+}
+html,body{height:100%;background:var(--canvas);font-family:var(--font-body);color:var(--nanquim);overscroll-behavior:none}
+/* APP SHELL */
+.app{max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;background:var(--canvas);position:relative}
+/* HEADER */
+.header{background:var(--nanquim);padding:14px 20px 12px;display:flex;justify-content:space-between;align-items:flex-end;flex-shrink:0}
+.logo{font-family:var(--font-display);font-size:20px;color:var(--terra)}
+.logo span{color:var(--canvas)}
+.logo-sub{font-size:7.5px;color:var(--gray);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
+.header-right{font-size:8px;color:var(--gray);text-align:right;letter-spacing:.04em}
+.header-date{color:var(--gray)}
+.header-month{color:var(--terra);font-weight:500;font-size:9px;margin-top:2px}
+/* SCROLL CONTENT */
+.screen{display:none;flex:1;overflow-y:auto;padding-bottom:70px}
+.screen.active{display:block}
+/* BOTTOM NAV */
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--nanquim);display:flex;border-top:1px solid var(--nanquim-soft);z-index:100}
+.nav-btn{flex:1;padding:10px 4px 12px;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;border-top:2px solid transparent;transition:border-color .2s}
+.nav-btn.active{border-top-color:var(--terra)}
+.nav-icon{font-size:16px;color:#9AA0A6}
+.nav-label{font-size:8.5px;font-weight:500;color:#9AA0A6;letter-spacing:.03em}
+.nav-btn.active .nav-label{color:var(--terra)}
+.nav-icon{font-size:16px;color:#9AA0A6}
+.nav-btn.active .nav-icon{color:var(--terra)}
+/* BANNER */
+.banner{padding:16px 20px 14px;border-left:3px solid var(--green);position:relative}
+.banner.pos{background:var(--green-light);border-left-color:var(--green)}
+.banner.neg{background:var(--red-light);border-left-color:var(--red)}
+.banner.neutral{background:var(--canvas-mid);border-left-color:var(--gray)}
+.banner-label{font-size:8px;font-weight:500;text-transform:uppercase;letter-spacing:.09em}
+.banner.pos .banner-label{color:var(--green)}
+.banner.neg .banner-label{color:var(--red)}
+.banner.neutral .banner-label{color:var(--gray)}
+.banner-value{font-family:var(--font-display);font-size:30px;line-height:1.1;margin-top:3px}
+.banner.pos .banner-value{color:var(--green)}
+.banner.neg .banner-value{color:var(--red)}
+.banner.neutral .banner-value{color:var(--nanquim)}
+.banner-sub{font-size:8px;margin-top:3px;color:var(--musgo)}
+.banner.neg .banner-sub{color:var(--red)}
+/* KPIS */
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--canvas-mid)}
+.kpi{background:var(--canvas);padding:10px 14px}
+.kpi-label{font-size:8px;color:var(--gray);text-transform:uppercase;letter-spacing:.06em}
+.kpi-value{font-size:13px;font-weight:500;margin-top:3px;color:var(--nanquim)}
+.kpi-value.gold{color:var(--gold)}
+.kpi-value.pos{color:var(--green)}
+.kpi-value.neg{color:var(--red)}
+/* SECTION LABEL */
+.section-lbl{padding:12px 20px 6px;font-size:9px;font-weight:500;color:var(--gray);text-transform:uppercase;letter-spacing:.09em;background:var(--canvas)}
+/* POSITION CARD */
+.pos-card{margin:0 12px 8px;background:var(--canvas-soft);border-radius:12px;border:.5px solid var(--canvas-mid);overflow:hidden}
+.pos-card-top{padding:11px 14px 8px;display:flex;justify-content:space-between;align-items:flex-start}
+.pos-name{font-size:13px;font-weight:500;color:var(--nanquim)}
+.pos-type-badge{font-size:9px;font-weight:500;padding:2px 8px;border-radius:20px;margin-top:3px;display:inline-block}
+.badge-acao{background:#EDE9DC;color:var(--musgo)}
+.badge-call-v{background:var(--red-light);color:var(--red)}
+.badge-call-c{background:#FFF3CD;color:#856404}
+.badge-put-c{background:var(--green-light);color:var(--green)}
+.badge-put-v{background:#F3E8FF;color:#6B21A8}
+.pos-res-wrap{text-align:right}
+.pos-res{font-size:13px;font-weight:500}
+.pos-pct{font-size:9px;margin-top:2px}
+.pos-card-bottom{background:var(--canvas-mid);padding:7px 14px;display:flex;gap:20px}
+.pos-detail{font-size:9px;color:var(--gray)}
+.pos-detail span{color:var(--nanquim);font-weight:500}
+/* OP CARD (operações screen) */
+.op-card{margin:0 12px 8px;background:var(--canvas-soft);border-radius:12px;border:.5px solid var(--canvas-mid);overflow:hidden}
+.op-card-header{padding:11px 14px 6px;display:flex;justify-content:space-between;align-items:center}
+.op-card-name{font-size:14px;font-weight:500;color:var(--nanquim)}
+.op-card-grid{padding:0 14px 10px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;border-top:.5px solid var(--canvas-mid);padding-top:8px;margin-top:4px}
+.op-field-lbl{font-size:8px;color:var(--gray);text-transform:uppercase;letter-spacing:.05em}
+.op-field-val{font-size:11px;font-weight:500;color:var(--nanquim);margin-top:2px}
+.op-card-res{background:var(--canvas-mid);padding:7px 14px;display:flex;justify-content:space-between;align-items:center}
+.op-res-lbl{font-size:9px;color:var(--gray)}
+.op-res-val{font-size:13px;font-weight:500}
+.op-actions{display:flex;gap:8px;padding:8px 14px}
+.btn-sm{flex:1;padding:7px;border-radius:8px;border:none;font-family:var(--font-body);font-size:11px;font-weight:500;cursor:pointer;transition:opacity .2s}
+.btn-sm:active{opacity:.7}
+.btn-edit{background:var(--canvas-mid);color:var(--nanquim)}
+.btn-close{background:var(--nanquim);color:white}
+.btn-reinvest{background:var(--musgo);color:white}
+/* ADD BUTTON */
+.btn-add{margin:4px 12px 8px;background:var(--terra);border-radius:12px;padding:13px;text-align:center;font-size:13px;font-weight:500;color:white;letter-spacing:.02em;cursor:pointer;border:none;width:calc(100% - 24px);font-family:var(--font-body);transition:background .2s}
+.btn-add:active{background:var(--terra-dark)}
+/* MODAL OVERLAY */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(28,30,31,.6);z-index:200;align-items:flex-end;justify-content:center;max-width:430px;margin:0 auto;left:50%;transform:translateX(-50%)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--canvas);border-radius:20px 20px 0 0;width:100%;padding:0 0 32px;max-height:90vh;overflow-y:auto}
+.modal-handle{width:36px;height:4px;background:var(--canvas-mid);border-radius:2px;margin:12px auto 16px}
+.modal-title{font-family:var(--font-display);font-size:18px;color:var(--nanquim);padding:0 20px 16px}
+.form-group{margin:0 20px 14px}
+.form-label{font-size:11px;font-weight:500;color:var(--nanquim);margin-bottom:6px;display:block}
+.form-input{width:100%;padding:11px 14px;border:.5px solid var(--canvas-mid);border-radius:10px;font-family:var(--font-body);font-size:14px;color:var(--nanquim);background:white;outline:none;transition:border-color .2s}
+.form-input:focus{border-color:var(--terra)}
+.form-select{width:100%;padding:11px 14px;border:.5px solid var(--canvas-mid);border-radius:10px;font-family:var(--font-body);font-size:14px;color:var(--nanquim);background:white;outline:none;appearance:none;cursor:pointer}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 20px 14px}
+.form-row .form-group{margin:0}
+.type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 20px 14px}
+.type-btn{padding:10px 6px;border-radius:10px;border:.5px solid var(--canvas-mid);background:white;font-family:var(--font-body);font-size:11px;font-weight:500;color:var(--gray);cursor:pointer;text-align:center;transition:all .2s}
+.type-btn.selected{border-color:var(--terra);background:var(--terra-light);color:var(--terra)}
+.btn-primary{width:calc(100% - 40px);margin:4px 20px 0;padding:14px;background:var(--terra);color:white;border:none;border-radius:12px;font-family:var(--font-body);font-size:14px;font-weight:500;cursor:pointer;transition:background .2s}
+.btn-primary:active{background:var(--terra-dark)}
+.btn-secondary{width:calc(100% - 40px);margin:10px 20px 0;padding:12px;background:var(--canvas-mid);color:var(--nanquim);border:none;border-radius:12px;font-family:var(--font-body);font-size:13px;font-weight:500;cursor:pointer}
+/* LOADING INDICATOR */
+.api-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);display:inline-block;margin-left:4px;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+/* ASSESS */
+.assess-summary{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--canvas-mid)}
+.assess-kpi{background:var(--canvas);padding:10px 14px}
+.assess-kpi-lbl{font-size:8px;color:var(--gray);text-transform:uppercase;letter-spacing:.06em}
+.assess-kpi-val{font-size:14px;font-weight:500;margin-top:3px}
+.assess-item{margin:0 12px 6px;display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px}
+.assess-item.pago{background:var(--green-light)}
+.assess-item.proximo{background:var(--gold-light);border:1px solid var(--gold)}
+.assess-item.previsto{background:var(--canvas-soft);border:.5px solid var(--canvas-mid)}
+.assess-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.pago .assess-dot{background:var(--green)}
+.proximo .assess-dot{background:var(--gold)}
+.previsto .assess-dot{background:var(--gray)}
+.assess-date{font-size:9px;color:var(--gray);min-width:68px}
+.assess-desc{flex:1;font-size:10px;color:var(--nanquim)}
+.assess-val{font-size:10px;font-weight:500}
+.pago .assess-val{color:var(--red)}
+.proximo .assess-val{color:var(--musgo)}
+.previsto .assess-val{color:var(--gray)}
+/* HISTORICO */
+.hist-block{margin:0 12px 12px;border-radius:12px;overflow:hidden;border:.5px solid var(--canvas-mid)}
+.hist-header{padding:10px 14px;display:flex;justify-content:space-between;align-items:center;background:var(--nanquim)}
+.hist-mes{font-size:12px;font-weight:500;color:white}
+.hist-badge{font-size:9px;font-weight:500;padding:2px 9px;border-radius:20px}
+.hist-badge.pos{background:var(--green-light);color:var(--green)}
+.hist-badge.neg{background:var(--red-light);color:var(--red)}
+.hist-badge.neutro{background:var(--canvas-mid);color:var(--gray)}
+.hist-row{padding:8px 14px;display:flex;justify-content:space-between;align-items:center;background:var(--canvas-soft);border-top:.5px solid var(--canvas-mid)}
+.hist-row-lbl{font-size:10px;color:var(--gray)}
+.hist-row-val{font-size:10px;font-weight:500}
+.hist-total-row{padding:10px 14px;display:flex;justify-content:space-between;align-items:center;background:var(--canvas-mid)}
+.hist-total-lbl{font-size:10px;font-weight:500;color:var(--nanquim)}
+.hist-total-val{font-size:14px;font-weight:500}
+/* PATRIMÔNIO CARD */
+.patrim-card{margin:12px 12px 0;background:var(--nanquim);border-radius:12px;padding:14px 16px}
+.patrim-lbl{font-size:9px;color:var(--gray);text-transform:uppercase;letter-spacing:.08em}
+.patrim-val{font-family:var(--font-display);font-size:26px;color:var(--gold);margin-top:4px}
+.patrim-sub{font-size:9px;color:var(--gray);margin-top:4px}
+.patrim-since{font-size:10px;color:var(--terra);margin-top:2px}
+/* TOAST */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--nanquim);color:white;padding:10px 20px;border-radius:20px;font-size:12px;font-weight:500;z-index:300;opacity:0;transition:opacity .3s;pointer-events:none;max-width:300px;text-align:center}
+.toast.show{opacity:1}
+/* EMPTY STATE */
+.empty{text-align:center;padding:40px 20px;color:var(--gray);font-size:13px}
+.empty-icon{font-size:32px;margin-bottom:10px}
+
+/* WELCOME SCREEN */
+.welcome-overlay{display:none;position:fixed;inset:0;background:var(--nanquim);z-index:500;flex-direction:column;align-items:center;justify-content:center;padding:40px 32px}
+.welcome-overlay.show{display:flex}
+.welcome-logo{font-family:var(--font-display);font-size:42px;color:var(--terra);margin-bottom:6px}
+.welcome-logo span{color:var(--canvas)}
+.welcome-tagline{font-size:11px;color:var(--gray);letter-spacing:.12em;text-transform:uppercase;margin-bottom:48px;text-align:center}
+.welcome-label{font-size:12px;color:var(--gray);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;align-self:flex-start}
+.welcome-input{width:100%;padding:16px 18px;border:1px solid var(--nanquim-soft);border-radius:14px;background:var(--nanquim-mid);font-family:var(--font-display);font-size:22px;color:var(--canvas);outline:none;transition:border-color .2s;margin-bottom:20px}
+.welcome-input::placeholder{color:var(--nanquim-muted)}
+.welcome-input:focus{border-color:var(--terra)}
+.welcome-btn{width:100%;padding:16px;background:var(--terra);color:white;border:none;border-radius:14px;font-family:var(--font-body);font-size:15px;font-weight:500;cursor:pointer;letter-spacing:.02em;transition:background .2s}
+.welcome-btn:active{background:var(--terra-dark)}
+.welcome-footer{font-size:10px;color:var(--nanquim-soft);margin-top:24px;text-align:center;line-height:1.6}
+/* HEADER SAUDAÇÃO */
+.header-greeting{font-size:9px;color:var(--terra);font-weight:500;letter-spacing:.04em;margin-top:2px}
+
+/* UPDATE COTAÇÕES */
+.cotacao-bar{background:var(--canvas-mid);padding:8px 20px;display:flex;justify-content:space-between;align-items:center}
+.cotacao-bar-txt{font-size:9px;color:var(--gray)}
+.btn-refresh{background:none;border:.5px solid var(--canvas-mid);border-radius:6px;padding:4px 10px;font-family:var(--font-body);font-size:9px;color:var(--nanquim);cursor:pointer}
+/* DETAILS SCREEN */
+.detail-row{margin:0 12px 6px;padding:10px 14px;background:var(--canvas-soft);border-radius:10px;border:.5px solid var(--canvas-mid);display:flex;justify-content:space-between}
+.detail-lbl{font-size:10px;color:var(--gray)}
+.detail-val{font-size:11px;font-weight:500;color:var(--nanquim)}
+/* CLOSE OPS ENCERRADAS */
+.closed-op{margin:0 12px 6px;padding:10px 14px;background:var(--canvas-soft);border-radius:10px;border:.5px solid var(--canvas-mid)}
+.closed-op-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.closed-op-name{font-size:12px;font-weight:500;color:var(--nanquim)}
+.closed-op-res{font-size:12px;font-weight:500}
+.closed-op-obs{font-size:9px;color:var(--gray);margin-top:3px;font-style:italic}
+.closed-op-date{font-size:9px;color:var(--gray)}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div>
+      <div class="logo">9<span>Pilla</span></div>
+      <div class="logo-sub">Controle de Investimentos</div>
+    </div>
+    <div class="header-right">
+      <div class="header-greeting" id="hdr-greeting"></div>
+      <div class="header-date" id="hdr-date"></div>
+      <div class="header-month" id="hdr-month"></div>
+    </div>
+  </div>
+
+  <!-- PAINEL -->
+  <div id="screen-painel" class="screen active">
+    <div class="patrim-card">
+      <div class="patrim-lbl">Patrimônio total</div>
+      <div class="patrim-val" id="patrim-val">—</div>
+      <div class="patrim-sub">Saldo livre + posições abertas</div>
+      <div class="patrim-since" id="patrim-since"></div>
+    </div>
+    <div id="banner-painel" class="banner neutral" style="margin-top:10px">
+      <div class="banner-label" id="banner-label">Resultado líquido do mês</div>
+      <div class="banner-value" id="banner-value">—</div>
+      <div class="banner-sub" id="banner-sub">atualize as posições para calcular</div>
+    </div>
+    <div class="kpis" id="kpis-painel"></div>
+    <div class="cotacao-bar">
+      <span class="cotacao-bar-txt" id="cotacao-status">Cotações: aguardando atualização</span>
+      <button class="btn-refresh" onclick="fetchCotacoes()">↻ Atualizar</button>
+    </div>
+    <div class="section-lbl">Posições abertas</div>
+    <div id="posicoes-painel"></div>
+  </div>
+
+  <!-- OPERAÇÕES -->
+  <div id="screen-operacoes" class="screen">
+    <div class="section-lbl" style="padding-top:16px">Posições abertas</div>
+    <div id="ops-abertas"></div>
+    <button class="btn-add" onclick="openModal('add')">+ Nova operação</button>
+    <div class="section-lbl" style="margin-top:8px">Operações encerradas</div>
+    <div id="ops-encerradas"></div>
+  </div>
+
+  <!-- ASSESSORIA -->
+  <div id="screen-assessoria" class="screen">
+    <div class="assess-summary" id="assess-summary"></div>
+    <div class="section-lbl" style="padding-top:14px">Cronograma · Milton Montanari</div>
+    <div id="assess-lista"></div>
+  </div>
+
+  <!-- HISTÓRICO -->
+  <div id="screen-historico" class="screen">
+    <div class="section-lbl" style="padding-top:16px">Resultado mês a mês</div>
+    <div id="hist-lista"></div>
+  </div>
+
+  <nav class="nav">
+    <button class="nav-btn active" onclick="showScreen('painel',this)">
+      <span class="nav-icon">◎</span><span class="nav-label">Painel</span>
+    </button>
+    <button class="nav-btn" onclick="showScreen('operacoes',this)">
+      <span class="nav-icon">⊞</span><span class="nav-label">Operações</span>
+    </button>
+    <button class="nav-btn" onclick="showScreen('assessoria',this)">
+      <span class="nav-icon">◈</span><span class="nav-label">Assessoria</span>
+    </button>
+    <button class="nav-btn" onclick="showScreen('historico',this)">
+      <span class="nav-icon">≡</span><span class="nav-label">Histórico</span>
+    </button>
+  </nav>
+</div>
+
+<!-- MODAL NOVA OPERAÇÃO -->
+<div class="modal-overlay" id="modal-add">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Nova operação</div>
+    <div class="form-group">
+      <label class="form-label">Ativo (ex: PETR4, VALE3)</label>
+      <input class="form-input" id="inp-ativo" placeholder="PETR4" autocapitalize="characters">
+    </div>
+    <div class="form-group"><label class="form-label">Tipo</label></div>
+    <div class="type-grid">
+      <button class="type-btn" data-type="acao" onclick="selectType(this)">📈 Ação</button>
+      <button class="type-btn" data-type="call-c" onclick="selectType(this)">Call comprada</button>
+      <button class="type-btn" data-type="call-v" onclick="selectType(this)">Call vendida</button>
+      <button class="type-btn" data-type="put-c" onclick="selectType(this)">Put comprada</button>
+      <button class="type-btn" data-type="put-v" onclick="selectType(this)">Put vendida</button>
+      <button class="type-btn" data-type="reinvest" onclick="selectType(this)">♻ Reinvest.</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Quantidade</label>
+        <input class="form-input" id="inp-qtd" type="number" placeholder="100" inputmode="decimal">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Preço médio (R$)</label>
+        <input class="form-input" id="inp-pm" type="number" step="0.01" placeholder="39.57" inputmode="decimal">
+      </div>
+    </div>
+    <div class="form-group" id="inp-atual-wrap">
+      <label class="form-label">Preço atual (R$) <span style="color:var(--gray);font-weight:400">(opções: preencha manualmente)</span></label>
+      <input class="form-input" id="inp-atual" type="number" step="0.01" placeholder="0.00" inputmode="decimal">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Observação (opcional)</label>
+      <input class="form-input" id="inp-obs" placeholder="ex: compra para construção de patrimônio">
+    </div>
+    <button class="btn-primary" onclick="saveOp()">Salvar operação</button>
+    <button class="btn-secondary" onclick="closeModal('add')">Cancelar</button>
+  </div>
+</div>
+
+<!-- MODAL ENCERRAR OPERAÇÃO -->
+<div class="modal-overlay" id="modal-close">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Encerrar operação</div>
+    <input type="hidden" id="close-op-id">
+    <div class="form-group">
+      <label class="form-label">Preço de saída (R$)</label>
+      <input class="form-input" id="close-preco" type="number" step="0.01" placeholder="0.00" inputmode="decimal">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Observação</label>
+      <input class="form-input" id="close-obs" placeholder="ex: usei para comprar mais PETR4">
+    </div>
+    <button class="btn-primary" onclick="encerrarOp()">Registrar encerramento</button>
+    <button class="btn-secondary" onclick="closeModal('close')">Cancelar</button>
+  </div>
+</div>
+
+<!-- MODAL EDITAR -->
+<div class="modal-overlay" id="modal-edit">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="edit-modal-title">Atualizar posição</div>
+    <input type="hidden" id="edit-op-id">
+    <div class="form-group">
+      <label class="form-label">Preço atual (R$)</label>
+      <input class="form-input" id="edit-atual" type="number" step="0.01" inputmode="decimal">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Quantidade (se mudou)</label>
+      <input class="form-input" id="edit-qtd" type="number" inputmode="decimal">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Preço médio (R$) (se mudou)</label>
+      <input class="form-input" id="edit-pm" type="number" step="0.01" inputmode="decimal">
+    </div>
+    <button class="btn-primary" onclick="saveEdit()">Atualizar</button>
+    <button class="btn-secondary" onclick="closeModal('edit')">Cancelar</button>
+  </div>
+</div>
+
+
+  <!-- WELCOME SCREEN -->
+  <div class="welcome-overlay" id="welcome-screen">
+    <div class="welcome-logo">9<span>Pilla</span></div>
+    <div class="welcome-tagline">Controle de Investimentos</div>
+    <div class="welcome-label">Como você se chama?</div>
+    <input class="welcome-input" id="welcome-name" placeholder="Seu nome" autocomplete="given-name" autocapitalize="words" maxlength="30">
+    <button class="welcome-btn" onclick="saveWelcome()">Entrar no app →</button>
+    <div class="welcome-footer">Seus dados ficam salvos apenas neste dispositivo.<br>Ninguém mais tem acesso.</div>
+  </div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── ESTADO INICIAL ───────────────────────────────────────────────────────
+const DEFAULT_STATE = {
+  saldoDisponivel: 3192.71,
+  operacoes: [
+    {id:'op1',ativo:'PETR4',tipo:'acao',qtd:137,pm:39.57,atual:44.67,obs:'',aberta:true,mes:'Mar/26',isAcao:true},
+    {id:'op2',ativo:'BOVAP180',tipo:'put-c',qtd:207,pm:4.96,atual:6.10,obs:'Put BOVA comprada',aberta:true,mes:'Mar/26',isAcao:false},
+    {id:'op3',ativo:'PETRD389',tipo:'call-v',qtd:100,pm:3.47,atual:6.64,obs:'Call PETR vendida',aberta:true,mes:'Mar/26',isAcao:false},
+  ],
+  encerradas: [
+    {id:'e1',ativo:'PETRC395',tipo:'put-c',qtd:100,pm:3.05,saida:1.45,resultado:-160,obs:'Put PETR encerrada',mes:'Mar/26',contribuicao:-160},
+    {id:'e2',ativo:'VALEO905',tipo:'put-c',qtd:100,pm:4.71,saida:8.10,resultado:339,obs:'',mes:'Mar/26',contribuicao:339},
+    {id:'e3',ativo:'BOVAO175',tipo:'put-c',qtd:200,pm:2.54,saida:3.54,resultado:199,obs:'',mes:'Mar/26',contribuicao:199},
+    {id:'e4',ativo:'WING26',tipo:'call-v',qtd:1,pm:182120,saida:181290,resultado:-166,obs:'Day trade encerrado',mes:'Fev/26',contribuicao:-166},
+    {id:'e5',ativo:'WING26',tipo:'call-v',qtd:1,pm:183615,saida:183315,resultado:-60,obs:'Day trade encerrado',mes:'Fev/26',contribuicao:-60},
+    {id:'e6',ativo:'WINJ26',tipo:'call-v',qtd:1,pm:189315,saida:189025,resultado:-58,obs:'Day trade encerrado',mes:'Fev/26',contribuicao:-58},
+    {id:'e7',ativo:'WINJ26',tipo:'call-v',qtd:2,pm:192212.50,saida:192172.50,resultado:-16,obs:'Day trade encerrado',mes:'Fev/26',contribuicao:-16},
+  ],
+  historico: [
+    {mes:'Fev/26',resOp:76.00,taxas:-9.15,assessoria:-2000.00},
+  ],
+  taxasPagas: 9.51,
+  aporteTotal: 9297.00,
+  inicioInvest: '02/02/2026',
+  lastUpdate: null
+};
+
+const ASSESSORIA = [
+  {data:'31/01/2026',desc:'Parcela 1',valor:2000,status:'pago'},
+  {data:'11/03/2026',desc:'Parcela 2',valor:1500,status:'pago'},
+  {data:'11/04/2026',desc:'Parcela 3',valor:400,status:'proximo'},
+  {data:'11/05/2026',desc:'Parcela 4',valor:900,status:'previsto'},
+  {data:'11/06/2026',desc:'Parcela 5',valor:900,status:'previsto'},
+  {data:'11/07/2026',desc:'Parcela 6',valor:900,status:'previsto'},
+  {data:'11/08/2026',desc:'Parcela 7',valor:900,status:'previsto'},
+  {data:'11/09/2026',desc:'Parcela 8',valor:900,status:'previsto'},
+  {data:'11/10/2026',desc:'Parcela 9',valor:900,status:'previsto'},
+  {data:'11/11/2026',desc:'Parcela 10 — última',valor:900,status:'previsto'},
+];
+
+// ── STORAGE ──────────────────────────────────────────────────────────────
+function loadState(){
+  try{const s=localStorage.getItem('9pilla_v3');return s?JSON.parse(s):JSON.parse(JSON.stringify(DEFAULT_STATE));}
+  catch(e){return JSON.parse(JSON.stringify(DEFAULT_STATE));}
+}
+function saveState(s){try{localStorage.setItem('9pilla_v3',JSON.stringify(s));}catch(e){}}
+
+let STATE = loadState();
+
+// ── UTILS ────────────────────────────────────────────────────────────────
+function brl(v,sign=false){
+  if(v===null||v===undefined||isNaN(v))return'—';
+  const abs='R$ '+Math.abs(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  if(sign)return(v<0?'– ':v>0?'+ ':'')+abs;
+  return (v<0?'– ':'')+abs;
+}
+function pct(v){
+  if(!v&&v!==0)return'—';
+  return(v>0?'+':'')+v.toFixed(2).replace('.',',')+'%';
+}
+function calcRes(op){
+  const a=parseFloat(op.atual)||0;
+  const pm=parseFloat(op.pm)||0;
+  const qtd=parseFloat(op.qtd)||0;
+  if(op.tipo==='call-v'||op.tipo==='put-v'){
+    return (pm-a)*qtd;
+  }
+  return (a-pm)*qtd;
+}
+function calcPct(op){
+  const pm=parseFloat(op.pm)||1;
+  const a=parseFloat(op.atual)||0;
+  if(op.tipo==='call-v'||op.tipo==='put-v') return (pm-a)/pm*100;
+  return (a-pm)/pm*100;
+}
+function getMesAtual(){
+  const now=new Date();
+  const meses=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  return meses[now.getMonth()]+'/'+(now.getFullYear().toString().slice(2));
+}
+function badgeClass(tipo){
+  const m={acao:'badge-acao','call-c':'badge-call-c','call-v':'badge-call-v','put-c':'badge-put-c','put-v':'badge-put-v',reinvest:'badge-acao'};
+  return m[tipo]||'badge-acao';
+}
+function badgeLabel(tipo){
+  const m={acao:'Ação','call-c':'Call comprada','call-v':'Call vendida','put-c':'Put comprada','put-v':'Put vendida',reinvest:'Reinvestimento'};
+  return m[tipo]||tipo;
+}
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+function uid(){return 'op'+Date.now()+Math.random().toString(36).slice(2,6);}
+
+// ── HEADER ───────────────────────────────────────────────────────────────
+function renderHeader(){
+  const now=new Date();
+  const dias=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  const meses=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  document.getElementById('hdr-date').textContent=dias[now.getDay()]+', '+now.getDate()+' '+meses[now.getMonth()];
+  document.getElementById('hdr-month').textContent=getMesAtual();
+  const nome=localStorage.getItem('9pilla_nome')||'';
+  const hora=now.getHours();
+  const saud=hora<12?'Bom dia':hora<18?'Boa tarde':'Boa noite';
+  if(nome)document.getElementById('hdr-greeting').textContent=saud+', '+nome+' ♥';
+}
+
+// ── API COTAÇÕES (ações apenas via brapi) ────────────────────────────────
+async function fetchCotacoes(){
+  const acoes=STATE.operacoes.filter(o=>o.aberta&&o.isAcao);
+  if(acoes.length===0){document.getElementById('cotacao-status').textContent='Sem ações para atualizar';return;}
+  document.getElementById('cotacao-status').innerHTML='Buscando cotações<span class="api-dot"></span>';
+  const tickers=acoes.map(o=>o.ativo.toUpperCase()).join(',');
+  try{
+    const res=await fetch(`https://brapi.dev/api/quote/${tickers}?token=demo`);
+    const data=await res.json();
+    if(data.results){
+      data.results.forEach(r=>{
+        const op=STATE.operacoes.find(o=>o.ativo.toUpperCase()===r.symbol.replace('.SA','').toUpperCase()&&o.aberta);
+        if(op){op.atual=r.regularMarketPrice;STATE.lastUpdate=new Date().toISOString();}
+      });
+      saveState(STATE);
+      renderAll();
+      const t=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+      document.getElementById('cotacao-status').textContent='Cotações atualizadas às '+t;
+      showToast('Cotações atualizadas!');
+    }
+  }catch(e){
+    document.getElementById('cotacao-status').textContent='Erro ao buscar cotações — verifique conexão';
+  }
+}
+
+// ── PAINEL ────────────────────────────────────────────────────────────────
+function renderPainel(){
+  const ops=STATE.operacoes.filter(o=>o.aberta);
+  const resAberto=ops.reduce((a,o)=>a+calcRes(o),0);
+  const posicionado=ops.reduce((a,o)=>a+(parseFloat(o.atual)||0)*(parseFloat(o.qtd)||0),0);
+  const patrimonio=posicionado+(STATE.saldoDisponivel||0);
+  const mesAtual=getMesAtual();
+  const assessoriaMes={'Fev/26':2000,'Mar/26':1500,'Abr/26':400};
+  const taxasMes={'Fev/26':9.15,'Mar/26':3.78};
+  const assM=assessoriaMes[mesAtual]||0;
+  const taxM=taxasMes[mesAtual]||0;
+  const encM=STATE.encerradas.filter(e=>e.mes===mesAtual).reduce((a,e)=>a+(e.resultado||0),0);
+  const resLiq=resAberto+encM-assM-taxM;
+
+  // Patrimônio card
+  document.getElementById('patrim-val').textContent=brl(patrimonio);
+  const inicio=new Date(STATE.inicioInvest);
+  const dias=Math.floor((Date.now()-inicio)/86400000);
+  document.getElementById('patrim-since').textContent='Investindo há '+dias+' dias · desde '+STATE.inicioInvest;
+
+  // Banner
+  const bn=document.getElementById('banner-painel');
+  bn.className='banner '+(resLiq>0?'pos':resLiq<0?'neg':'neutral');
+  document.getElementById('banner-label').textContent=mesAtual+' — resultado líquido';
+  document.getElementById('banner-value').textContent=brl(resLiq,true);
+  document.getElementById('banner-sub').textContent=resLiq>0?'após taxas e assessoria · você está positiva':resLiq<0?'após taxas e assessoria · você está negativa':'atualize posições para calcular';
+
+  // KPIs
+  const kpis=[
+    {l:'Patrimônio',v:brl(patrimonio),cls:'gold'},
+    {l:'Saldo livre',v:brl(STATE.saldoDisponivel||0),cls:''},
+    {l:'Res. aberto',v:brl(resAberto,true),cls:resAberto>=0?'pos':'neg'},
+    {l:'Posicionado',v:brl(posicionado),cls:''},
+    {l:'Taxas pagas',v:'– '+brl(STATE.taxasPagas||0),cls:'neg'},
+    {l:'Assessoria',v:'– '+brl(3500),cls:'neg'},
+  ];
+  document.getElementById('kpis-painel').innerHTML=kpis.map(k=>`<div class="kpi"><div class="kpi-label">${k.l}</div><div class="kpi-value ${k.cls}">${k.v}</div></div>`).join('');
+
+  // Posições
+  document.getElementById('posicoes-painel').innerHTML=ops.length===0
+    ?'<div class="empty"><div class="empty-icon">📭</div>Nenhuma posição aberta</div>'
+    :ops.map(op=>{
+      const res=calcRes(op);const p=calcPct(op);const pos=res>=0;
+      return`<div class="pos-card">
+        <div class="pos-card-top">
+          <div>
+            <div class="pos-name">${op.ativo}</div>
+            <div class="pos-type-badge ${badgeClass(op.tipo)}">${badgeLabel(op.tipo)}</div>
+          </div>
+          <div class="pos-res-wrap">
+            <div class="pos-res" style="color:var(--${pos?'green':'red'})">${brl(res,true)}</div>
+            <div class="pos-pct" style="color:var(--${pos?'green':'red'})">${pct(p)}</div>
+          </div>
+        </div>
+        <div class="pos-card-bottom">
+          <div class="pos-detail">Qtd <span>${op.qtd}</span></div>
+          <div class="pos-detail">PM <span>${brl(op.pm)}</span></div>
+          <div class="pos-detail">Atual <span>${brl(op.atual)}</span></div>
+        </div>
+      </div>`;
+    }).join('');
+}
+
+// ── OPERAÇÕES ─────────────────────────────────────────────────────────────
+function renderOperacoes(){
+  const abertas=STATE.operacoes.filter(o=>o.aberta);
+  document.getElementById('ops-abertas').innerHTML=abertas.length===0
+    ?'<div class="empty"><div class="empty-icon">📭</div>Sem posições abertas</div>'
+    :abertas.map(op=>{
+      const res=calcRes(op);const p=calcPct(op);const pos=res>=0;
+      return`<div class="op-card">
+        <div class="op-card-header">
+          <div class="op-card-name">${op.ativo}</div>
+          <div class="pos-type-badge ${badgeClass(op.tipo)}">${badgeLabel(op.tipo)}</div>
+        </div>
+        <div class="op-card-grid">
+          <div><div class="op-field-lbl">Qtd</div><div class="op-field-val">${op.qtd}</div></div>
+          <div><div class="op-field-lbl">PM (R$)</div><div class="op-field-val">${Number(op.pm).toFixed(2)}</div></div>
+          <div><div class="op-field-lbl">Atual (R$)</div><div class="op-field-val" style="color:var(--terra)">${Number(op.atual).toFixed(2)}</div></div>
+        </div>
+        <div class="op-card-res">
+          <span class="op-res-lbl">Resultado aberto</span>
+          <span class="op-res-val" style="color:var(--${pos?'green':'red'})">${brl(res,true)}</span>
+        </div>
+        <div class="op-actions">
+          <button class="btn-sm btn-edit" onclick="openEdit('${op.id}')">✏ Atualizar</button>
+          <button class="btn-sm btn-close" onclick="openCloseModal('${op.id}')">Encerrar</button>
+        </div>
+      </div>`;
+    }).join('');
+
+  const enc=STATE.encerradas;
+  document.getElementById('ops-encerradas').innerHTML=enc.length===0
+    ?'<div class="empty" style="padding:20px"><div style="color:var(--gray);font-size:12px">Nenhuma operação encerrada</div></div>'
+    :enc.slice().reverse().map(e=>{
+      const pos=e.resultado>=0;
+      return`<div class="closed-op">
+        <div class="closed-op-header">
+          <div>
+            <span class="closed-op-name">${e.ativo}</span>
+            <div class="pos-type-badge ${badgeClass(e.tipo)}" style="margin-top:3px">${badgeLabel(e.tipo)}</div>
+          </div>
+          <div style="text-align:right">
+            <div class="closed-op-res" style="color:var(--${pos?'green':'red'})">${brl(e.resultado,true)}</div>
+            <div class="closed-op-date">${e.mes}</div>
+          </div>
+        </div>
+        ${e.obs?`<div class="closed-op-obs">"${e.obs}"</div>`:''}
+      </div>`;
+    }).join('');
+}
+
+// ── ASSESSORIA ────────────────────────────────────────────────────────────
+function renderAssessoria(){
+  const pago=ASSESSORIA.filter(a=>a.status==='pago').reduce((s,a)=>s+a.valor,0);
+  const aPagar=ASSESSORIA.filter(a=>a.status!=='pago').reduce((s,a)=>s+a.valor,0);
+  document.getElementById('assess-summary').innerHTML=`
+    <div class="assess-kpi"><div class="assess-kpi-lbl">Já pago</div><div class="assess-kpi-val" style="color:var(--red)">– ${brl(pago)}</div></div>
+    <div class="assess-kpi"><div class="assess-kpi-lbl">A pagar</div><div class="assess-kpi-val" style="color:var(--gold)">${brl(aPagar)}</div></div>
+    <div class="assess-kpi"><div class="assess-kpi-lbl">Total contrato</div><div class="assess-kpi-val">${brl(pago+aPagar)}</div></div>
+    <div class="assess-kpi"><div class="assess-kpi-lbl">Próximo venc.</div><div class="assess-kpi-val" style="color:var(--terra)">11/04/26</div></div>`;
+  document.getElementById('assess-lista').innerHTML=ASSESSORIA.map(a=>`
+    <div class="assess-item ${a.status}">
+      <div class="assess-dot"></div>
+      <div class="assess-date">${a.data}</div>
+      <div class="assess-desc">${a.desc}</div>
+      <div class="assess-val">${a.status==='pago'?'– ':''}${brl(a.valor)}</div>
+    </div>`).join('');
+}
+
+// ── HISTÓRICO ─────────────────────────────────────────────────────────────
+function renderHistorico(){
+  // Construir histórico dinâmico a partir das encerradas + estado salvo
+  const mesesMap={};
+  STATE.encerradas.forEach(e=>{
+    if(!mesesMap[e.mes])mesesMap[e.mes]={resOp:0,taxas:0,assessoria:0};
+    mesesMap[e.mes].resOp+=e.resultado||0;
+  });
+  // Merge com histórico salvo
+  STATE.historico.forEach(h=>{
+    if(!mesesMap[h.mes])mesesMap[h.mes]={resOp:0,taxas:0,assessoria:0};
+    if(h.taxas)mesesMap[h.mes].taxas=h.taxas;
+    if(h.assessoria)mesesMap[h.mes].assessoria=h.assessoria;
+    if(h.resOp)mesesMap[h.mes].resOp=h.resOp;
+  });
+  // Adicionar res aberto do mês atual
+  const mesAtual=getMesAtual();
+  const resAberto=STATE.operacoes.filter(o=>o.aberta).reduce((a,o)=>a+calcRes(o),0);
+  if(!mesesMap[mesAtual])mesesMap[mesAtual]={resOp:0,taxas:0,assessoria:0};
+  mesesMap[mesAtual].resOp=(mesesMap[mesAtual].resOp||0)+resAberto;
+  mesesMap[mesAtual].taxas=mesesMap[mesAtual].taxas||-3.78;
+  mesesMap[mesAtual].assessoria=mesesMap[mesAtual].assessoria||-1500;
+
+  const ordemMes={'Jan':1,'Fev':2,'Mar':3,'Abr':4,'Mai':5,'Jun':6,'Jul':7,'Ago':8,'Set':9,'Out':10,'Nov':11,'Dez':12};
+  const mesesOrdenados=Object.keys(mesesMap).sort((a,b)=>{
+    const [ma,ya]=a.split('/');const[mb,yb]=b.split('/');
+    return (20+parseInt(yb))*100+ordemMes[mb]-(20+parseInt(ya))*100-ordemMes[ma];
+  });
+
+  if(mesesOrdenados.length===0){
+    document.getElementById('hist-lista').innerHTML='<div class="empty"><div class="empty-icon">📊</div>Nenhum histórico ainda</div>';
+    return;
+  }
+
+  document.getElementById('hist-lista').innerHTML=mesesOrdenados.map(mes=>{
+    const d=mesesMap[mes];
+    const assess=d.assessoria||0;
+    const taxas=d.taxas||0;
+    const liq=d.resOp+taxas+assess;
+    const pos=liq>0;
+    return`<div class="hist-block">
+      <div class="hist-header">
+        <span class="hist-mes">${mes}</span>
+        <span class="hist-badge ${pos?'pos':liq<0?'neg':'neutro'}">${pos?'positiva':liq<0?'negativa':'neutro'}</span>
+      </div>
+      <div class="hist-row"><span class="hist-row-lbl">Resultado operações</span><span class="hist-row-val" style="color:var(--${d.resOp>=0?'green':'red'})">${brl(d.resOp,true)}</span></div>
+      <div class="hist-row"><span class="hist-row-lbl">Taxas e corretagens</span><span class="hist-row-val" style="color:var(--red)">${brl(taxas,true)}</span></div>
+      <div class="hist-row"><span class="hist-row-lbl">Assessoria Milton</span><span class="hist-row-val" style="color:var(--red)">${brl(assess,true)}</span></div>
+      <div class="hist-total-row">
+        <span class="hist-total-lbl">Líquido do mês</span>
+        <span class="hist-total-val" style="color:var(--${pos?'green':'red'})">${brl(liq,true)}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── MODAIS ────────────────────────────────────────────────────────────────
+let selectedType=null;
+function openModal(id){document.getElementById('modal-'+id).classList.add('open');}
+function closeModal(id){document.getElementById('modal-'+id).classList.remove('open');}
+function selectType(btn){
+  document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedType=btn.dataset.type;
+}
+function saveOp(){
+  const ativo=document.getElementById('inp-ativo').value.trim().toUpperCase();
+  const qtd=parseFloat(document.getElementById('inp-qtd').value);
+  const pm=parseFloat(document.getElementById('inp-pm').value);
+  const atual=parseFloat(document.getElementById('inp-atual').value)||pm;
+  const obs=document.getElementById('inp-obs').value.trim();
+  if(!ativo||!selectedType||!qtd||!pm){showToast('Preencha todos os campos obrigatórios');return;}
+  const isAcao=selectedType==='acao'||selectedType==='reinvest';
+  // Se reinvest e ativo já existe, atualizar PM ponderado
+  if(selectedType==='reinvest'){
+    const existing=STATE.operacoes.find(o=>o.ativo===ativo&&o.aberta);
+    if(existing){
+      const totalQtd=existing.qtd+qtd;
+      const newPm=(existing.pm*existing.qtd+pm*qtd)/totalQtd;
+      existing.qtd=totalQtd;existing.pm=parseFloat(newPm.toFixed(4));
+      saveState(STATE);renderAll();closeModal('add');showToast('Posição de '+ativo+' atualizada!');
+      document.getElementById('inp-ativo').value='';document.getElementById('inp-qtd').value='';
+      document.getElementById('inp-pm').value='';document.getElementById('inp-atual').value='';
+      document.getElementById('inp-obs').value='';selectedType=null;
+      document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('selected'));
+      return;
+    }
+  }
+  STATE.operacoes.push({id:uid(),ativo,tipo:selectedType,qtd,pm,atual,obs,aberta:true,mes:getMesAtual(),isAcao});
+  saveState(STATE);renderAll();closeModal('add');showToast('Operação adicionada!');
+  document.getElementById('inp-ativo').value='';document.getElementById('inp-qtd').value='';
+  document.getElementById('inp-pm').value='';document.getElementById('inp-atual').value='';
+  document.getElementById('inp-obs').value='';selectedType=null;
+  document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('selected'));
+}
+function openEdit(id){
+  const op=STATE.operacoes.find(o=>o.id===id);if(!op)return;
+  document.getElementById('edit-op-id').value=id;
+  document.getElementById('edit-modal-title').textContent='Atualizar · '+op.ativo;
+  document.getElementById('edit-atual').value=op.atual||'';
+  document.getElementById('edit-qtd').value=op.qtd||'';
+  document.getElementById('edit-pm').value=op.pm||'';
+  openModal('edit');
+}
+function saveEdit(){
+  const id=document.getElementById('edit-op-id').value;
+  const op=STATE.operacoes.find(o=>o.id===id);if(!op)return;
+  const a=parseFloat(document.getElementById('edit-atual').value);
+  const q=parseFloat(document.getElementById('edit-qtd').value);
+  const pm=parseFloat(document.getElementById('edit-pm').value);
+  if(!isNaN(a))op.atual=a;
+  if(!isNaN(q)&&q>0)op.qtd=q;
+  if(!isNaN(pm)&&pm>0)op.pm=pm;
+  saveState(STATE);renderAll();closeModal('edit');showToast('Posição atualizada!');
+}
+function openCloseModal(id){
+  document.getElementById('close-op-id').value=id;
+  document.getElementById('close-preco').value='';
+  document.getElementById('close-obs').value='';
+  openModal('close');
+}
+function encerrarOp(){
+  const id=document.getElementById('close-op-id').value;
+  const preco=parseFloat(document.getElementById('close-preco').value);
+  const obs=document.getElementById('close-obs').value.trim();
+  if(isNaN(preco)){showToast('Informe o preço de saída');return;}
+  const op=STATE.operacoes.find(o=>o.id===id);if(!op)return;
+  const oldAtual=op.atual;op.atual=preco;
+  const resultado=calcRes(op);
+  STATE.encerradas.push({id:uid(),ativo:op.ativo,tipo:op.tipo,qtd:op.qtd,pm:op.pm,saida:preco,resultado,obs,mes:getMesAtual(),contribuicao:resultado});
+  STATE.operacoes=STATE.operacoes.filter(o=>o.id!==id);
+  saveState(STATE);renderAll();closeModal('close');showToast(op.ativo+' encerrado: '+brl(resultado,true));
+}
+
+// ── NAV ───────────────────────────────────────────────────────────────────
+function showScreen(name,btn){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── RENDER ALL ────────────────────────────────────────────────────────────
+function renderAll(){
+  renderHeader();renderPainel();renderOperacoes();renderAssessoria();renderHistorico();
+}
+
+// ── CLOSE MODALS ON OVERLAY CLICK ─────────────────────────────────────────
+document.querySelectorAll('.modal-overlay').forEach(o=>{
+  o.addEventListener('click',e=>{if(e.target===o){const id=o.id.replace('modal-','');closeModal(id);}});
+});
+
+
+// ── WELCOME ───────────────────────────────────────────────────────────────
+function saveWelcome(){
+  const nome=document.getElementById('welcome-name').value.trim();
+  if(!nome){document.getElementById('welcome-name').focus();return;}
+  localStorage.setItem('9pilla_nome',nome);
+  document.getElementById('welcome-screen').classList.remove('show');
+  renderAll();
+  showToast('Bem-vinda ao 9Pilla, '+nome+'! ♥');
+}
+document.getElementById('welcome-name').addEventListener('keydown',e=>{if(e.key==='Enter')saveWelcome();});
+function checkWelcome(){
+  const nome=localStorage.getItem('9pilla_nome');
+  if(!nome)document.getElementById('welcome-screen').classList.add('show');
+}
+
+renderAll();
+checkWelcome();
+// Auto-refresh cotações a cada 5 minutos
+setInterval(fetchCotacoes,300000);
+</script>
+</body>
+</html>
