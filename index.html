@@ -230,6 +230,27 @@ html,body{height:100%;background:var(--canvas);font-family:var(--font-body);colo
 .api-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);display:inline-block;margin-left:3px;animation:pulse 1.4s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
 
+
+/* BANNER SECUNDÁRIO (mês atual) */
+.banner-sec{margin:6px 12px 0;border-radius:10px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;background:var(--canvas-mid)}
+.banner-sec.pos{background:var(--green-light)}
+.banner-sec.neg{background:var(--red-light)}
+.banner-sec-label{font-size:9px;font-weight:500;color:var(--gray);text-transform:uppercase;letter-spacing:.07em}
+.banner-sec.pos .banner-sec-label{color:var(--green-dark)}
+.banner-sec.neg .banner-sec-label{color:var(--red)}
+.banner-sec-value{font-size:15px;font-weight:500}
+.banner-sec.pos .banner-sec-value{color:var(--green)}
+.banner-sec.neg .banner-sec-value{color:var(--red)}
+.banner-sec-sub{font-size:8px;color:var(--gray);margin-top:2px}
+.banner-sec.pos .banner-sec-sub{color:var(--green-dark)}
+.banner-sec.neg .banner-sec-sub{color:var(--red)}
+/* ACUMULADO BLOCO */
+.hist-acum{margin:4px 12px 10px;border-radius:12px;overflow:hidden;border:1.5px solid var(--nanquim)}
+.hist-acum-hdr{padding:10px 14px;background:var(--nanquim);display:flex;justify-content:space-between;align-items:center}
+.hist-acum-lbl{font-size:11px;font-weight:500;color:var(--canvas)}
+.hist-acum-val{font-size:18px;font-weight:500}
+.hist-acum-sub{padding:8px 14px;background:var(--canvas-mid);font-size:9px;color:var(--gray);font-style:italic}
+
 /* INFO BOX */
 .info-box{margin:8px 12px 0;background:var(--gold-light);border-radius:10px;padding:10px 14px;border-left:3px solid var(--gold)}
 .info-box-txt{font-size:10px;color:var(--musgo);line-height:1.6}
@@ -277,6 +298,13 @@ html,body{height:100%;background:var(--canvas);font-family:var(--font-body);colo
       <div class="banner-sub" id="banner-sub">atualize as posições para calcular</div>
     </div>
 
+    <div id="banner-sec-painel" class="banner-sec neg">
+      <div>
+        <div class="banner-sec-label" id="banner-sec-label">Mês atual</div>
+        <div class="banner-sec-sub" id="banner-sec-sub">—</div>
+      </div>
+      <div class="banner-sec-value" id="banner-sec-value">—</div>
+    </div>
     <div class="kpis" id="kpis-painel"></div>
 
     <div class="cotacao-bar">
@@ -588,21 +616,45 @@ function renderPainel(){
   const dias=Math.floor((Date.now()-ini)/86400000);
   document.getElementById('patrim-since').textContent='Investindo há '+dias+' dias · desde '+(S.inicioInvest||'02/02/2026');
 
-  // Resultado líquido do mês
+  // Resultado líquido do mês atual
   const mes=getMes();
-  // Operações encerradas do mês (só resultados, não reinvestimentos)
   const encMes=S.encerradas.filter(e=>e.mes===mes&&e.tipoEnc==='resultado').reduce((a,e)=>a+(e.resultado||0),0);
   const ASSESS_MES={'Jan/26':0,'Fev/26':2000,'Mar/26':1500,'Abr/26':400,'Mai/26':900,'Jun/26':900,'Jul/26':900,'Ago/26':900,'Set/26':900,'Out/26':900,'Nov/26':900};
   const TAXAS_MES={'Fev/26':9.15,'Mar/26':3.78};
   const assM=ASSESS_MES[mes]||0;
   const taxM=TAXAS_MES[mes]||0;
-  const resLiq=resAberto+encMes-assM-taxM;
+  const resLiqMes=resAberto+encMes-assM-taxM;
 
+  // Acumulado desde o início (todos os meses)
+  const TODOS_MESES=['Fev/26','Mar/26'];
+  const ASSESS_TODOS={'Fev/26':2000,'Mar/26':1500};
+  const TAXAS_TODOS={'Fev/26':9.15,'Mar/26':3.78};
+  let acumTotal=0;
+  TODOS_MESES.forEach(m=>{
+    const encM=S.encerradas.filter(e=>e.mes===m&&e.tipoEnc==='resultado').reduce((a,e)=>a+(e.resultado||0),0);
+    const resAb=m===mes?resAberto:0;
+    acumTotal+=encM+resAb-(ASSESS_TODOS[m]||0)-(TAXAS_TODOS[m]||0);
+  });
+  // Histórico salvo
+  S.historico.forEach(h=>{
+    if(!TODOS_MESES.includes(h.mes)){
+      acumTotal+=(h.resOp||0)+(h.taxas||0)+(h.assessoria||0);
+    }
+  });
+
+  // Banner principal = ACUMULADO
   const bn=document.getElementById('banner-painel');
-  bn.className='banner '+(resLiq>0?'pos':resLiq<0?'neg':'neutral');
-  document.getElementById('banner-label').textContent=mes+' — resultado líquido';
-  document.getElementById('banner-value').textContent=brl(resLiq,true);
-  document.getElementById('banner-sub').textContent=resLiq>0?'após taxas e assessoria · você está positiva':resLiq<0?'após taxas e assessoria · você está negativa':'atualize posições para calcular';
+  bn.className='banner '+(acumTotal>0?'pos':acumTotal<0?'neg':'neutral');
+  document.getElementById('banner-label').textContent='Acumulado desde '+S.inicioInvest;
+  document.getElementById('banner-value').textContent=brl(acumTotal,true);
+  document.getElementById('banner-sub').textContent=acumTotal>0?'resultado líquido total · você está positiva':acumTotal<0?'resultado líquido total · você está negativa':'—';
+
+  // Banner secundário = MÊS ATUAL
+  const bns=document.getElementById('banner-sec-painel');
+  bns.className='banner-sec '+(resLiqMes>0?'pos':resLiqMes<0?'neg':'neutral');
+  document.getElementById('banner-sec-label').textContent=mes+' — mês atual';
+  document.getElementById('banner-sec-value').textContent=brl(resLiqMes,true);
+  document.getElementById('banner-sec-sub').textContent=resLiqMes>0?'positiva no mês':resLiqMes<0?'negativa no mês':'—';
 
   // KPIs
   document.getElementById('kpis-painel').innerHTML=[
@@ -761,6 +813,13 @@ function renderHistorico(){
     return;
   }
 
+  // Calcular acumulado total
+  const acumGeral=meses.reduce((tot,m)=>{
+    const d=map[m];
+    return tot+(d.resOp||0)+(d.resAberto||0)+(d.taxas||0)+(d.assessoria||0);
+  },0);
+  const acumPos=acumGeral>0;
+
   document.getElementById('hist-lista').innerHTML=meses.map(mes=>{
     const d=map[mes];
     const encFechado=d.resOp||0;
@@ -787,7 +846,14 @@ function renderHistorico(){
       </div>
       ${isMesAtual?'<div class="hist-note">Posições abertas incluídas como resultado no papel — não realizado.</div>':''}
     </div>`;
-  }).join('');
+  }).join('')+`
+    <div class="hist-acum">
+      <div class="hist-acum-hdr">
+        <span class="hist-acum-lbl">Acumulado total</span>
+        <span class="hist-acum-val" style="color:var(--${acumPos?'green':'red'})">${brl(acumGeral,true)}</span>
+      </div>
+      <div class="hist-acum-sub">Resultado líquido acumulado desde 02/02/2026 · inclui posições abertas no papel</div>
+    </div>`;
 }
 
 // ─── MODAIS ───────────────────────────────────────────────────────────────────
