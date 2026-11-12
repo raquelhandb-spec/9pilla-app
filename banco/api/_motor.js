@@ -15,18 +15,20 @@ const ATIVOS = [
 const UA = { 'User-Agent': 'Mozilla/5.0 (9Pilla app educativo)' };
 const HIST_N = 10, STREAK_MAX = 60, GRAF_N = 60;
 
-async function getJSON(url) {
+// Chave da BRAPI (plano pago): variável secreta BRAPI_TOKEN na Vercel, nunca no código
+const BRAPI_TOKEN = process.env.BRAPI_TOKEN || '';
+async function getJSON(url, extra) {
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), 12000);
   try {
-    const r = await fetch(url, { headers: UA, signal: ctrl.signal });
+    const r = await fetch(url, { headers: Object.assign({}, UA, extra || {}), signal: ctrl.signal });
     if (!r.ok) throw new Error('HTTP ' + r.status);
     return await r.json();
   } finally { clearTimeout(t); }
 }
 
 async function histBrapi(t) {
-  const d = await getJSON(`https://brapi.dev/api/quote/${t}?range=1y&interval=1d`);
+  const d = await getJSON(`https://brapi.dev/api/quote/${t}?range=1y&interval=1d`, BRAPI_TOKEN ? { Authorization: 'Bearer ' + BRAPI_TOKEN } : null);
   const h = d.results[0].historicalDataPrice;
   return { rows: h.filter((x) => x.close).map((x) => [x.date, x.high, x.low, x.close]), fonte: 'BRAPI' };
 }
