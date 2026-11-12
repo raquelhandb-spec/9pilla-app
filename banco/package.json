@@ -1,0 +1,7 @@
+{
+  "name": "9pilla-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "App 9Pilla: banco de investimentos educativo (PWA + funções de dados de mercado)",
+  "engines": { "node": "22.x" }
+}

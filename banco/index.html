@@ -1,0 +1,819 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>9Pilla</title>
+<meta name="description" content="9Pilla: seu banco de investimentos educativo. Entenda o mercado e faça seu dinheiro render.">
+<meta name="theme-color" content="#0B2A1B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="9Pilla">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,700&family=Anton&display=swap" rel="stylesheet">
+<style>
+:root{
+  --menta:#09C797; --marinho:#122B4A; --logo:#2FCD7F; --creme:#EFEFE4; --branco:#FFFFFF;
+  --floresta:#0B2A1B; --lima:#7DF14E; --mentaClaro:#CEFBDA; --royal:#053E75;
+  --texto:#122B4A; --suave:#3D5470; --nota:#4A5A6E; --verdeTexto:#077A5D; --vermelho:#B3261E;
+  --linha:rgba(18,43,74,.1);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--creme);color:var(--texto);font-family:'Manrope',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+body{min-height:100vh;min-height:100dvh}
+button,input,select{font-family:inherit;color:inherit}
+a{color:var(--verdeTexto)}
+#app{max-width:480px;margin:0 auto;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;background:var(--creme);position:relative}
+main{flex:1 1 auto;padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+.hdr{background:var(--floresta);color:var(--creme);padding:calc(16px + env(safe-area-inset-top)) 20px 22px;display:flex;flex-direction:column;gap:14px}
+.hdr.navy{background:var(--marinho)}
+.hdr.menta{background:var(--menta);color:var(--floresta)}
+.toprow{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.logo{display:flex;align-items:baseline;gap:1px;text-decoration:none}
+.logo .n{font-family:'Playfair Display',serif;font-style:italic;font-weight:700;font-size:28px;color:var(--logo);line-height:1}
+.logo .p{font-weight:800;font-size:21px;color:var(--creme);letter-spacing:-.5px;line-height:1}
+.hdr.menta .logo .n{color:var(--marinho)} .hdr.menta .logo .p{color:#fff}
+.iconbtn{width:44px;height:44px;border-radius:22px;border:1px solid rgba(239,239,228,.3);background:transparent;color:inherit;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none}
+.hdr.menta .iconbtn{border-color:rgba(11,42,27,.3)}
+h1.big{margin:0;font-family:'Anton',sans-serif;font-weight:400;font-size:34px;text-transform:uppercase;line-height:1.05;letter-spacing:.3px}
+.hl{color:var(--lima)} .hdr.menta .hl{color:var(--marinho)}
+.sub{font-size:14px;line-height:1.5;color:var(--mentaClaro)}
+.hdr.menta .sub{color:var(--floresta)}
+.wrap{padding:0 16px;display:flex;flex-direction:column;gap:12px;margin-top:14px}
+.card{background:#fff;border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.card.dark{background:var(--floresta);color:var(--creme)}
+.card.navy{background:var(--marinho);color:var(--creme)}
+.card.mint{background:var(--mentaClaro);color:var(--floresta)}
+.card.warn{background:#FFE9B8;color:#5A3D00}
+.eyebrow{font-size:12px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase}
+.card.dark .eyebrow,.card.navy .eyebrow{color:var(--lima)}
+.card.mint .eyebrow{color:var(--verdeTexto)}
+h2{margin:0;font-size:17px;font-weight:800}
+p{margin:0}
+.muted{color:var(--suave);font-size:13px;line-height:1.5}
+.small{font-size:12px;line-height:1.5}
+.legal{font-size:11px;line-height:1.5;color:var(--nota);margin:16px 16px 8px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.btn{min-height:52px;border-radius:16px;border:none;background:var(--marinho);color:#fff;font-size:16px;font-weight:800;cursor:pointer;padding:0 18px;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none}
+.btn.menta{background:var(--menta);color:var(--floresta)}
+.btn.lima{background:var(--lima);color:var(--floresta)}
+.btn.ghost{background:transparent;border:2px solid var(--marinho);color:var(--marinho)}
+.btn.small{min-height:44px;font-size:14px;border-radius:22px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.pill{min-height:44px;padding:0 14px;border-radius:22px;border:2px solid rgba(18,43,74,.2);background:#fff;color:var(--marinho);font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap}
+.pill[aria-pressed=true],.pill[aria-selected=true]{background:var(--marinho);color:#fff;border-color:var(--marinho)}
+.tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.hdr .pill{background:transparent;color:var(--creme);border-color:rgba(239,239,228,.35)}
+.hdr .pill[aria-selected=true]{background:var(--lima);color:var(--floresta);border-color:var(--lima)}
+.card.navy .pill,.card.dark .pill{background:transparent;color:var(--creme);border-color:rgba(239,239,228,.35)}
+.card.navy .pill[aria-pressed=true],.card.dark .pill[aria-pressed=true]{background:var(--lima);color:var(--floresta);border-color:var(--lima)}
+.qa{display:flex;flex-direction:column;align-items:center;gap:8px;text-decoration:none;color:var(--marinho);font-size:13px;font-weight:700;background:none;border:none;cursor:pointer;padding:0}
+.qa .ic{width:60px;height:60px;border-radius:18px;background:#fff;display:flex;align-items:center;justify-content:center}
+.qa.on .ic{background:var(--menta);color:var(--floresta)}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:13px;font-weight:700;color:var(--suave)}
+.input{min-height:50px;border-radius:12px;border:2px solid rgba(18,43,74,.2);padding:0 14px;font-size:16px;background:#fff;width:100%}
+.input:focus,.pill:focus-visible,.btn:focus-visible,.iconbtn:focus-visible,a:focus-visible,button:focus-visible{outline:3px solid var(--menta);outline-offset:2px}
+input[type=range]{width:100%;accent-color:var(--menta);min-height:32px}
+.money{font-size:34px;font-weight:800;letter-spacing:-1px}
+.mov{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--linha);gap:10px}
+.mov:last-child{border-bottom:none}
+.mov .t{font-weight:700;font-size:15px}
+.pos{color:var(--verdeTexto);font-weight:800}
+.neg{color:var(--vermelho);font-weight:800}
+.badge{font-size:12px;font-weight:800;letter-spacing:1px;padding:6px 10px;border-radius:10px;white-space:nowrap}
+.b-alta{background:#CEFBDA;color:#0B2A1B}.b-lateral{background:#DCE6F2;color:#122B4A}.b-queda{background:#FFE0DA;color:#7A1F12}.b-observar{background:#FFE9B8;color:#5A3D00}
+.ind{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;background:var(--creme);border-radius:12px;padding:10px;font-size:11px;color:var(--suave)}
+.ind strong{display:block;font-size:12px;color:var(--marinho)}
+.strip{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:3px}
+.strip span{height:10px;border-radius:3px}
+.s-alta{background:#2FCD7F}.s-lateral{background:#8FA8C8}.s-queda{background:#E8806E}.s-observar{background:#F2C14E}
+.demo{background:#FFE9B8;color:#5A3D00;font-size:12px;font-weight:700;text-align:center;padding:8px 12px;line-height:1.4}
+nav.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));background:#fff;border-top:1px solid var(--linha);padding:6px 6px calc(10px + env(safe-area-inset-bottom));z-index:10}
+nav.bottom a{min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-decoration:none;color:var(--suave);font-size:11px;font-weight:600}
+nav.bottom a[aria-current=page]{color:var(--verdeTexto);font-weight:800}
+.toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--floresta);color:var(--creme);padding:12px 18px;border-radius:14px;font-size:14px;font-weight:700;z-index:20;max-width:90%;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.chart{width:100%;height:auto;display:block;background:var(--creme);border-radius:10px}
+.bar{height:10px;background:var(--creme);border-radius:5px;overflow:hidden}
+.bar>div{height:10px;border-radius:5px}
+.opt{min-height:44px;padding:8px 12px;border-radius:12px;text-align:left;font-size:13px;font-weight:700;cursor:pointer;background:var(--creme);border:2px solid var(--creme);width:100%}
+.opt[aria-pressed=true]{background:var(--marinho);color:#fff;border-color:var(--marinho)}
+.skeleton{background:linear-gradient(90deg,#fff 0,#f4f4ec 50%,#fff 100%);background-size:200% 100%;animation:sk 1.2s infinite;border-radius:18px;height:180px}
+@keyframes sk{to{background-position:-200% 0}}
+.hide{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body>
+<div id="app"><main id="main" tabindex="-1"></main></div>
+<nav class="bottom" aria-label="Menu principal" id="nav"></nav>
+<div id="toast" class="toast hide" role="status" aria-live="polite"></div>
+
+<script>
+'use strict';
+/* ============ Dados de reserva (quando o servidor não responde) ============ */
+const SNAPSHOT = /*SNAPSHOT_START*/{"radar": {"atualizado": "12/11/2026 às 15:16", "ativos": [{"ticker": "PETR4", "nome": "Petrobras PN", "setor": "Energia", "fonte": "BRAPI", "cenario": "observar", "precoNum": 44.74, "preco": "R$ 44,74", "var": "+2,73%", "varPos": true, "mm21": "R$ 52,25", "mm50": "R$ 50,99", "ifr": "14", "vol": "47% a.a.", "volNum": 47.125608044925364, "leitura": "IFR abaixo de 30: queda muito forte e rápida. Repiques são comuns; o método espera o preço se estabilizar.", "volTxt": "Volatilidade alta: prêmios das opções tendem a estar caros. Isso favorece quem vende prêmio e encarece quem compra.", "suporte": "R$ 43,55", "resistencia": "R$ 59,68", "pregoes": 26, "anterior": "alta", "hist": [{"d": "29/10", "c": "observar"}, {"d": "30/10", "c": "observar"}, {"d": "03/11", "c": "observar"}, {"d": "04/11", "c": "observar"}, {"d": "05/11", "c": "observar"}, {"d": "06/11", "c": "observar"}, {"d": "09/11", "c": "observar"}, {"d": "10/11", "c": "observar"}, {"d": "11/11", "c": "observar"}, {"d": "12/11", "c": "observar"}], "graf": {"c": [42.6, 43.11, 44.32, 44.3, 42.11, 41.35, 41.45, 42.7, 43.55, 45.02, 46.87, 48.2, 47.56, 47.11, 48.09, 48.42, 49.12, 49, 48.92, 50.43, 48.65, 48.61, 48.5, 48, 48.35, 49.6, 49.26, 47.99, 48.72, 49.1, 49.12, 49.77, 51.17, 55.36, 53.82, 54.33, 55.48, 56, 56.85, 58.11, 57.36, 59.68, 58, 58.21, 57.75, 57.83, 58.68, 53.88, 52.79, 52.51, 52.2, 52.71, 50.71, 47.12, 45.95, 45.36, 45.19, 44.95, 43.55, 44.74], "m21": [42.13, 42.2, 42.28, 42.35, 42.34, 42.36, 42.37, 42.4, 42.44, 42.51, 42.7, 42.97, 43.24, 43.47, 43.82, 44.11, 44.47, 44.83, 45.16, 45.56, 45.85, 46.14, 46.39, 46.57, 46.76, 47.12, 47.5, 47.81, 48.09, 48.36, 48.55, 48.69, 48.83, 49.2, 49.52, 49.82, 50.16, 50.48, 50.86, 51.3, 51.63, 52.15, 52.6, 53.06, 53.53, 53.98, 54.41, 54.63, 54.86, 55.04, 55.19, 55.36, 55.4, 55.21, 54.76, 54.36, 53.92, 53.42, 52.83, 52.25], "m50": [40.5, 40.53, 40.58, 40.64, 40.7, 40.76, 40.82, 40.89, 40.99, 41.11, 41.26, 41.46, 41.64, 41.82, 42.02, 42.23, 42.46, 42.68, 42.89, 43.14, 43.35, 43.53, 43.71, 43.88, 44.03, 44.21, 44.39, 44.55, 44.7, 44.86, 45.01, 45.16, 45.32, 45.58, 45.84, 46.1, 46.37, 46.64, 46.9, 47.2, 47.5, 47.86, 48.17, 48.52, 48.83, 49.16, 49.5, 49.74, 49.95, 50.15, 50.35, 50.54, 50.67, 50.72, 50.8, 50.88, 50.95, 51, 51, 50.99]}, "data": "2026-11-12"}, {"ticker": "VALE3", "nome": "Vale ON", "setor": "Mineração", "fonte": "BRAPI", "cenario": "lateral", "precoNum": 64.37, "preco": "R$ 64,37", "var": "-0,09%", "varPos": false, "mm21": "R$ 63,73", "mm50": "R$ 69,29", "ifr": "58", "vol": "37% a.a.", "volNum": 37.29755938832166, "leitura": "Média de 21 dias quase plana e preço perto dela. O ativo oscila entre R$ 60,05 e R$ 66,42 nas últimas 20 sessões.", "volTxt": "Volatilidade alta: prêmios das opções tendem a estar caros. Isso favorece quem vende prêmio e encarece quem compra.", "suporte": "R$ 60,05", "resistencia": "R$ 66,42", "pregoes": 1, "anterior": "observar", "hist": [{"d": "29/10", "c": "observar"}, {"d": "30/10", "c": "queda"}, {"d": "03/11", "c": "observar"}, {"d": "04/11", "c": "queda"}, {"d": "05/11", "c": "queda"}, {"d": "06/11", "c": "queda"}, {"d": "09/11", "c": "observar"}, {"d": "10/11", "c": "observar"}, {"d": "11/11", "c": "observar"}, {"d": "12/11", "c": "lateral"}], "graf": {"c": [71.55, 72.13, 74.02, 75.03, 77.13, 78.7, 78.45, 79.11, 78.58, 77.85, 78.3, 80.8, 78.45, 78.62, 79.02, 79.1, 78.23, 78.2, 75.48, 74.6, 73, 74.51, 73.37, 72.55, 72.83, 71.48, 70.66, 70.77, 71.16, 69.61, 69.91, 70.3, 72.1, 71.4, 70.37, 68.75, 67.64, 67.9, 67.16, 66.72, 66.42, 66.21, 66.36, 65.44, 64.03, 61.49, 61.9, 64.38, 63, 61.38, 60.05, 62.02, 60.25, 62.35, 62.67, 64.04, 66.11, 64.8, 64.43, 64.37], "m21": [74.51, 74.5, 74.45, 74.42, 74.51, 74.66, 74.79, 74.98, 75.1, 75.17, 75.35, 75.56, 75.65, 75.8, 75.99, 76.14, 76.33, 76.57, 76.74, 76.89, 76.97, 77.11, 77.17, 77.1, 76.99, 76.73, 76.34, 75.98, 75.6, 75.17, 74.79, 74.41, 74, 73.66, 73.27, 72.78, 72.23, 71.74, 71.22, 70.8, 70.41, 70.09, 69.7, 69.32, 68.92, 68.38, 67.92, 67.62, 67.25, 66.78, 66.33, 65.95, 65.47, 65.01, 64.59, 64.29, 64.17, 64.03, 63.87, 63.73], "m50": [76.05, 75.94, 75.84, 75.76, 75.68, 75.63, 75.6, 75.58, 75.54, 75.48, 75.46, 75.52, 75.51, 75.52, 75.54, 75.57, 75.57, 75.57, 75.5, 75.44, 75.38, 75.41, 75.42, 75.38, 75.38, 75.33, 75.25, 75.21, 75.18, 75.13, 75.08, 74.99, 74.91, 74.84, 74.73, 74.59, 74.44, 74.28, 74.1, 73.94, 73.74, 73.53, 73.35, 73.16, 72.92, 72.67, 72.44, 72.29, 72.12, 71.92, 71.69, 71.49, 71.22, 70.96, 70.67, 70.38, 70.13, 69.85, 69.56, 69.29]}, "data": "2026-11-12"}, {"ticker": "ITUB4", "nome": "Itaú Unibanco PN", "setor": "Banco", "fonte": "BRAPI", "cenario": "observar", "precoNum": 41.36, "preco": "R$ 41,36", "var": "-0,86%", "varPos": false, "mm21": "R$ 43,47", "mm50": "R$ 43,76", "ifr": "27", "vol": "58% a.a.", "volNum": 58.09108984042902, "leitura": "IFR abaixo de 30: queda muito forte e rápida. Repiques são comuns; o método espera o preço se estabilizar.", "volTxt": "Volatilidade alta: prêmios das opções tendem a estar caros. Isso favorece quem vende prêmio e encarece quem compra.", "suporte": "R$ 38,49", "resistencia": "R$ 48,90", "pregoes": 13, "anterior": "alta", "hist": [{"d": "29/10", "c": "observar"}, {"d": "30/10", "c": "observar"}, {"d": "03/11", "c": "observar"}, {"d": "04/11", "c": "observar"}, {"d": "05/11", "c": "observar"}, {"d": "06/11", "c": "observar"}, {"d": "09/11", "c": "observar"}, {"d": "10/11", "c": "observar"}, {"d": "11/11", "c": "observar"}, {"d": "12/11", "c": "observar"}], "graf": {"c": [38.19, 38.37, 37.51, 38.6, 38.73, 39.44, 39.45, 39.1, 39.19, 39.52, 39.88, 41.41, 41.92, 41.92, 42.43, 41.59, 42.35, 42.73, 42.35, 42.67, 42.62, 42.58, 42.33, 43.08, 43.18, 42.37, 41.87, 42.13, 41.71, 42.3, 44.28, 44.15, 44.83, 49.48, 50.45, 49.11, 49.35, 50.47, 49.68, 48.98, 48.35, 48.09, 47.9, 48.8, 48.9, 48, 48.3, 41.7, 41.19, 39.78, 39.54, 38.69, 38.49, 39.71, 39.97, 40.53, 41.72, 41.2, 41.72, 41.36], "m21": [41.19, 40.99, 40.74, 40.55, 40.39, 40.23, 40.07, 39.94, 39.77, 39.61, 39.46, 39.42, 39.4, 39.41, 39.49, 39.54, 39.7, 39.91, 40.1, 40.27, 40.47, 40.68, 40.87, 41.14, 41.36, 41.53, 41.64, 41.77, 41.9, 42.04, 42.27, 42.47, 42.64, 43, 43.4, 43.72, 44.09, 44.48, 44.81, 45.12, 45.4, 45.66, 45.91, 46.22, 46.49, 46.72, 47.01, 47, 46.95, 46.86, 46.73, 46.46, 46.19, 45.95, 45.5, 45.03, 44.67, 44.29, 43.87, 43.47], "m50": [41.55, 41.53, 41.47, 41.43, 41.4, 41.38, 41.35, 41.32, 41.31, 41.28, 41.26, 41.27, 41.27, 41.26, 41.26, 41.25, 41.25, 41.26, 41.25, 41.25, 41.25, 41.27, 41.26, 41.24, 41.23, 41.21, 41.18, 41.17, 41.17, 41.17, 41.2, 41.23, 41.27, 41.42, 41.58, 41.7, 41.85, 42.01, 42.14, 42.26, 42.38, 42.5, 42.62, 42.78, 42.95, 43.13, 43.33, 43.39, 43.44, 43.47, 43.49, 43.5, 43.52, 43.54, 43.57, 43.59, 43.63, 43.68, 43.73, 43.76]}, "data": "2026-11-12"}, {"ticker": "BBDC4", "nome": "Bradesco PN", "setor": "Banco", "fonte": "Yahoo Finance", "cenario": "observar", "precoNum": 14.149999618530273, "preco": "R$ 14,15", "var": "-1,26%", "varPos": false, "mm21": "R$ 16,75", "mm50": "R$ 17,99", "ifr": "17", "vol": "93% a.a.", "volNum": 93.14960430585992, "leitura": "IFR abaixo de 30: queda muito forte e rápida. Repiques são comuns; o método espera o preço se estabilizar.", "volTxt": "Volatilidade alta: prêmios das opções tendem a estar caros. Isso favorece quem vende prêmio e encarece quem compra.", "suporte": "R$ 13,58", "resistencia": "R$ 20,73", "pregoes": 13, "anterior": "alta", "hist": [{"d": "29/10", "c": "observar"}, {"d": "30/10", "c": "observar"}, {"d": "03/11", "c": "observar"}, {"d": "04/11", "c": "observar"}, {"d": "05/11", "c": "observar"}, {"d": "06/11", "c": "observar"}, {"d": "09/11", "c": "observar"}, {"d": "10/11", "c": "observar"}, {"d": "11/11", "c": "observar"}, {"d": "12/11", "c": "observar"}], "graf": {"c": [16.12, 16.02, 15.75, 16.24, 16.27, 16.78, 16.99, 16.93, 17.08, 17.19, 17.4, 17.75, 17.79, 17.9, 18.22, 17.79, 18.48, 18.59, 18.33, 18.2, 18.21, 18.15, 17.99, 18.16, 18.43, 18.03, 17.78, 17.88, 17.66, 17.78, 18.51, 18.53, 19.23, 21.84, 22.8, 21.96, 21.51, 21.61, 21.4, 20.87, 20.73, 20.36, 20.1, 20.68, 20.65, 20.22, 20.37, 15.95, 15.73, 14.68, 14.16, 13.86, 13.58, 14.06, 13.77, 14.2, 14.68, 14.54, 14.33, 14.15], "m21": [17.77, 17.65, 17.5, 17.38, 17.28, 17.19, 17.1, 17.04, 16.97, 16.92, 16.86, 16.84, 16.83, 16.84, 16.88, 16.91, 16.99, 17.08, 17.16, 17.24, 17.33, 17.43, 17.53, 17.64, 17.74, 17.83, 17.88, 17.92, 17.95, 17.99, 18.05, 18.1, 18.17, 18.37, 18.6, 18.78, 18.95, 19.1, 19.24, 19.36, 19.48, 19.58, 19.67, 19.8, 19.92, 20.01, 20.12, 20.03, 19.93, 19.79, 19.61, 19.39, 19.16, 18.91, 18.53, 18.12, 17.77, 17.44, 17.09, 16.75], "m50": [17.89, 17.87, 17.83, 17.8, 17.77, 17.75, 17.74, 17.73, 17.72, 17.71, 17.71, 17.71, 17.71, 17.71, 17.71, 17.71, 17.71, 17.72, 17.72, 17.73, 17.74, 17.75, 17.74, 17.73, 17.72, 17.71, 17.7, 17.69, 17.67, 17.66, 17.66, 17.65, 17.66, 17.73, 17.81, 17.87, 17.94, 18, 18.06, 18.11, 18.16, 18.21, 18.26, 18.32, 18.39, 18.46, 18.53, 18.52, 18.5, 18.47, 18.43, 18.39, 18.35, 18.3, 18.25, 18.2, 18.16, 18.11, 18.05, 17.99]}, "data": "2026-11-12"}, {"ticker": "BBAS3", "nome": "Banco do Brasil ON", "setor": "Banco", "fonte": "Yahoo Finance", "cenario": "observar", "precoNum": 15.600000381469727, "preco": "R$ 15,60", "var": "-7,64%", "varPos": false, "mm21": "R$ 19,52", "mm50": "R$ 21,48", "ifr": "15", "vol": "128% a.a.", "volNum": 127.67083272887237, "leitura": "IFR abaixo de 30: queda muito forte e rápida. Repiques são comuns; o método espera o preço se estabilizar.", "volTxt": "Volatilidade alta: prêmios das opções tendem a estar caros. Isso favorece quem vende prêmio e encarece quem compra.", "suporte": "R$ 15,60", "resistencia": "R$ 24,72", "pregoes": 13, "anterior": "alta", "hist": [{"d": "29/10", "c": "observar"}, {"d": "30/10", "c": "observar"}, {"d": "03/11", "c": "observar"}, {"d": "04/11", "c": "observar"}, {"d": "05/11", "c": "observar"}, {"d": "06/11", "c": "observar"}, {"d": "09/11", "c": "observar"}, {"d": "10/11", "c": "observar"}, {"d": "11/11", "c": "observar"}, {"d": "12/11", "c": "observar"}], "graf": {"c": [17.8, 18.08, 18.04, 18.43, 18.6, 19.57, 19.52, 19.97, 20.17, 20.74, 21.21, 22.26, 22.45, 22.52, 22.6, 22.18, 22.8, 22.49, 22.12, 22.04, 22.71, 22.78, 23.2, 22.99, 22.67, 22.17, 21.54, 21.59, 21.49, 22.04, 23.07, 23.08, 23.72, 26.33, 24.64, 24.18, 24.26, 24.64, 24.25, 24.19, 23.76, 23.63, 23.95, 24.2, 24.1, 23.92, 24.72, 17.47, 17.38, 16.79, 16.46, 16.47, 16.19, 16.49, 16.49, 17.13, 17.02, 17.1, 16.89, 15.6], "m21": [20.1, 19.97, 19.83, 19.71, 19.62, 19.58, 19.52, 19.48, 19.43, 19.4, 19.4, 19.46, 19.53, 19.63, 19.75, 19.86, 20.02, 20.19, 20.38, 20.55, 20.78, 21.01, 21.26, 21.49, 21.69, 21.86, 21.96, 22.06, 22.13, 22.22, 22.33, 22.42, 22.49, 22.67, 22.77, 22.85, 22.95, 23.04, 23.12, 23.22, 23.3, 23.34, 23.4, 23.45, 23.5, 23.56, 23.68, 23.49, 23.29, 23.06, 22.8, 22.48, 22.15, 21.81, 21.34, 20.98, 20.64, 20.3, 19.93, 19.52], "m50": [19.98, 19.96, 19.94, 19.91, 19.9, 19.9, 19.9, 19.91, 19.93, 19.95, 19.98, 20.03, 20.08, 20.12, 20.17, 20.21, 20.27, 20.32, 20.37, 20.41, 20.47, 20.54, 20.6, 20.65, 20.7, 20.73, 20.75, 20.77, 20.79, 20.82, 20.87, 20.91, 20.96, 21.08, 21.17, 21.23, 21.3, 21.37, 21.43, 21.49, 21.54, 21.59, 21.67, 21.75, 21.83, 21.92, 22.04, 22.02, 22, 21.98, 21.95, 21.92, 21.89, 21.85, 21.8, 21.76, 21.71, 21.65, 21.58, 21.48]}, "data": "2026-11-12"}, {"ticker": "BOVA11", "nome": "ETF do Ibovespa", "setor": "Índice", "fonte": "Yahoo Finance", "cenario": "observar", "precoNum": 168.1999969482422, "preco": "R$ 168,20", "var": "-0,59%", "varPos": false, "mm21": "R$ 180,93", "mm50": "R$ 184,55", "ifr": "19", "vol": "58% a.a.", "volNum": 58.167286809387996, "leitura": "IFR abaixo de 30: queda muito forte e rápida. Repiques são comuns; o método espera o preço se estabilizar.", "volTxt": "Volatilidade alta: prêmios das opções tendem a estar caros. Isso favorece quem vende prêmio e encarece quem compra.", "suporte": "R$ 163,01", "resistencia": "R$ 205,01", "pregoes": 13, "anterior": "alta", "hist": [{"d": "29/10", "c": "observar"}, {"d": "30/10", "c": "observar"}, {"d": "03/11", "c": "observar"}, {"d": "04/11", "c": "observar"}, {"d": "05/11", "c": "observar"}, {"d": "06/11", "c": "observar"}, {"d": "09/11", "c": "observar"}, {"d": "10/11", "c": "observar"}, {"d": "11/11", "c": "observar"}, {"d": "12/11", "c": "observar"}], "graf": {"c": [163.55, 165, 165, 168.33, 169.01, 171.88, 171.82, 172.4, 172.72, 174.78, 177.1, 182.27, 182.25, 181.94, 184.79, 182.87, 185.21, 183.85, 182.55, 183.89, 182.66, 183.28, 182.47, 183.95, 184.3, 182.86, 180.87, 180.82, 180.18, 181.05, 184.08, 184.41, 190, 204.35, 202.5, 201.25, 203.08, 205.55, 203.6, 203.65, 201.39, 202.3, 202.42, 205.01, 203.5, 200.96, 201.69, 172.42, 173, 168.47, 166.51, 165.4, 163.01, 164.82, 163.03, 165.93, 169.67, 168.85, 169.2, 168.2], "m21": [170.29, 170.03, 169.57, 169.33, 169.24, 169.19, 169.1, 169.19, 169.12, 169.1, 169.21, 169.56, 169.92, 170.39, 171.13, 171.78, 172.74, 173.65, 174.52, 175.48, 176.37, 177.31, 178.15, 179.05, 179.81, 180.47, 180.9, 181.33, 181.7, 182.09, 182.54, 182.88, 183.25, 184.3, 185.28, 186.07, 187.03, 188, 188.94, 189.94, 190.78, 191.71, 192.62, 193.7, 194.63, 195.42, 196.32, 195.91, 195.54, 194.98, 194.29, 193.4, 192.38, 191.18, 189.22, 187.48, 185.97, 184.34, 182.61, 180.93], "m50": [169.61, 169.59, 169.52, 169.52, 169.55, 169.66, 169.8, 169.94, 170.09, 170.24, 170.42, 170.71, 170.98, 171.21, 171.5, 171.78, 172.11, 172.39, 172.62, 172.91, 173.18, 173.5, 173.75, 173.93, 174.17, 174.35, 174.52, 174.72, 174.91, 175.12, 175.4, 175.59, 175.92, 176.59, 177.19, 177.74, 178.39, 179.01, 179.58, 180.16, 180.69, 181.24, 181.85, 182.56, 183.25, 183.96, 184.7, 184.87, 185.05, 185.15, 185.2, 185.21, 185.17, 185.1, 184.98, 184.86, 184.82, 184.75, 184.68, 184.55]}, "data": "2026-11-12"}], "falhas": []}, "taxas": {"poupMes": 0.6699, "selic": 13.75, "cdi": 13.65, "ipca12": 4.63, "data": "12/11/2026"}, "dividendos": {"atualizado": "12/11/2026", "ativos": [{"ticker": "PETR4", "nome": "Petrobras PN", "setor": "Energia", "preco": 44.73, "total12": 3.6643, "n12": 4, "dy": 8.19, "ultimos": [{"data": "24/08/2026", "valor": 1.3481}, {"data": "02/06/2026", "valor": 0.701}, {"data": "23/04/2026", "valor": 0.6631}, {"data": "23/12/2025", "valor": 0.9521}]}, {"ticker": "VALE3", "nome": "Vale ON", "setor": "Mineração", "preco": 64.37, "total12": 5.6125, "n12": 2, "dy": 8.72, "ultimos": [{"data": "12/08/2026", "valor": 2.0307}, {"data": "12/12/2025", "valor": 3.5818}, {"data": "13/08/2025", "valor": 1.8954}, {"data": "10/03/2025", "valor": 2.1418}]}, {"ticker": "ITUB4", "nome": "Itaú Unibanco PN", "setor": "Banco", "preco": 41.34, "total12": 2.6479, "n12": 9, "dy": 6.41, "ultimos": [{"data": "03/11/2026", "valor": 0.0182}, {"data": "04/05/2026", "valor": 0.0182}, {"data": "01/04/2026", "valor": 0.0182}, {"data": "20/03/2026", "valor": 0.3489}]}, {"ticker": "BBDC4", "nome": "Bradesco PN", "setor": "Banco", "preco": 14.15, "total12": 0.8151, "n12": 9, "dy": 5.76, "ultimos": [{"data": "04/11/2026", "valor": 0.019}, {"data": "05/05/2026", "valor": 0.0189}, {"data": "07/04/2026", "valor": 0.2968}, {"data": "02/04/2026", "valor": 0.0189}]}, {"ticker": "BBAS3", "nome": "Banco do Brasil ON", "setor": "Banco", "preco": 15.6, "total12": 0.655, "n12": 6, "dy": 4.2, "ultimos": [{"data": "02/09/2026", "valor": 0.1053}, {"data": "02/06/2026", "valor": 0.1413}, {"data": "03/03/2026", "valor": 0.0701}, {"data": "24/02/2026", "valor": 0.2205}]}, {"ticker": "ITSA4", "nome": "Itaúsa PN", "setor": "Holding", "preco": 13.4, "total12": 1.1278, "n12": 7, "dy": 8.42, "ultimos": [{"data": "01/09/2026", "valor": 0.0242}, {"data": "19/06/2026", "valor": 0.138}, {"data": "01/06/2026", "valor": 0.0242}, {"data": "20/03/2026", "valor": 0.116}]}, {"ticker": "BBSE3", "nome": "BB Seguridade ON", "setor": "Seguros", "preco": 37.91, "total12": 4.5901, "n12": 2, "dy": 12.11, "ultimos": [{"data": "07/08/2026", "valor": 1.9833}, {"data": "13/02/2026", "valor": 2.6068}, {"data": "15/08/2025", "valor": 1.9421}, {"data": "21/02/2025", "valor": 2.3202}]}, {"ticker": "TAEE11", "nome": "Taesa Unit", "setor": "Energia elétrica", "preco": 41.41, "total12": 3.0065, "n12": 4, "dy": 7.26, "ultimos": [{"data": "17/08/2026", "valor": 0.6002}, {"data": "12/05/2026", "valor": 0.559}, {"data": "30/04/2026", "valor": 0.9089}, {"data": "17/11/2025", "valor": 0.9384}]}]}}/*SNAPSHOT_END*/;
+const TAXAS_PADRAO = { data: '11/11/2026', selic: 13.75, cdi: 13.65, ipca12: 4.58, poupMes: 0.6494 };
+
+/* ============ Utilidades ============ */
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const brl = (x, d = 2) => (x || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: d, maximumFractionDigits: d });
+const pct = (x, d = 2) => x.toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d }) + '%';
+const num = (s) => {
+  let t = String(s).replace(/[^\d,.]/g, '');
+  // "20.5" sem vírgula vira decimal; "1.020,00" segue o padrão brasileiro
+  if (t.indexOf(',') < 0 && /^\d+\.\d{1,2}$/.test(t)) t = t.replace('.', ',');
+  const n = parseFloat(t.replace(/\./g, '').replace(',', '.'));
+  return isFinite(n) && n > 0 ? n : 0;
+};
+const ICON = {
+  home: '<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/>',
+  trend: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
+  radar: '<circle cx="12" cy="12" r="9"/><path d="M12 12l5-3"/><path d="M12 3v2M21 12h-2M12 21v-2M3 12h2"/>',
+  pix: '<path d="M12 2l4 4-4 4-4-4z"/><path d="M12 14l4 4-4 4-4-4z"/><path d="M2 12l4-4 4 4-4 4z"/><path d="M14 12l4-4 4 4-4 4z"/>',
+  user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>',
+  back: '<path d="M15 18l-6-6 6-6"/>',
+  eye: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  eyeOff: '<path d="M3 3l18 18"/><path d="M10.6 5.1A10 10 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3 3.9M6.6 6.6C3.9 8.3 2 12 2 12s3.5 7 10 7a9.7 9.7 0 0 0 5.4-1.6"/>',
+  down: '<path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 21h16"/>',
+  target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/>',
+  coin: '<circle cx="12" cy="12" r="9"/><path d="M15 9.5c-.5-1-1.6-1.5-3-1.5-1.7 0-3 .9-3 2s1.3 1.7 3 2 3 .9 3 2-1.3 2-3 2c-1.4 0-2.5-.5-3-1.5M12 6v2M12 16v2"/>',
+  book: '<path d="M4 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-5a3 3 0 0 0-3 3"/><path d="M20 4v14h-6"/>',
+  refresh: '<path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/>',
+  chev: '<path d="M9 18l6-6-6-6"/>'
+};
+const ic = (k, s = 22, w = 2) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[k]}</svg>`;
+const logo = () => '<a class="logo" href="#/inicio" aria-label="9Pilla, início"><span class="n">9</span><span class="p">Pilla</span></a>';
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.remove('hide'); clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.add('hide'), 2800); }
+
+/* ============ Conta de demonstração (salva no aparelho) ============ */
+const KEY = '9pilla.conta.v1';
+function novaConta(nome) {
+  const agora = Date.now();
+  return { nome, saldo: 1, saldo1: true, caixinha: 0, caixinhaTs: agora, mostrar: true, perfil: {}, criada: agora,
+    extrato: [{ desc: 'Saldo inicial de demonstração', valor: 1, ts: agora }] };
+}
+let conta = null;
+try { conta = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { conta = null; }
+function salvar() { try { localStorage.setItem(KEY, JSON.stringify(conta)); } catch (e) {} }
+// entrega já logada: sem conta salva, abre direto a conta da Raquel
+const NOME_PADRAO = 'Raquel';
+if (!conta) { conta = novaConta(NOME_PADRAO); salvar(); }
+// contas criadas antes do saldo de R$ 1,00 recomeçam com R$ 1,00, mantendo o nome e o perfil
+if (conta && !conta.saldo1) { const n = novaConta(conta.nome); n.perfil = conta.perfil || {}; n.saldo1 = true; conta = n; salvar(); }
+function lancar(desc, valor, extra) { conta.extrato.unshift({ desc, valor, extra: extra || 0, ts: Date.now() }); conta.extrato = conta.extrato.slice(0, 60); salvar(); }
+// a caixinha rende 100% do CDI por dia útil (aprox. 252 por ano), calculado ao abrir o app
+function renderCaixinha() {
+  if (!conta || conta.caixinha <= 0) { if (conta) conta.caixinhaTs = Date.now(); return; }
+  const dias = Math.floor((Date.now() - conta.caixinhaTs) / 86400000);
+  if (dias < 1) return;
+  const uteis = Math.floor(dias * 252 / 365);
+  if (uteis < 1) return;
+  const fator = Math.pow(1 + T().cdi / 100, uteis / 252);
+  const ganho = +(conta.caixinha * (fator - 1)).toFixed(2);
+  conta.caixinha = +(conta.caixinha + ganho).toFixed(2);
+  conta.caixinhaTs += dias * 86400000;
+  if (ganho > 0) lancar('Rendimento da caixinha (' + uteis + (uteis === 1 ? ' dia útil' : ' dias úteis') + ')', 0, ganho);
+  salvar();
+}
+
+/* ============ Dados ao vivo ============ */
+const D = { radar: SNAPSHOT && SNAPSHOT.radar, div: SNAPSHOT && SNAPSHOT.dividendos, taxas: null, radarFonte: SNAPSHOT ? 'cópia' : null, carregando: false };
+try { const c = JSON.parse(localStorage.getItem('9pilla.cache') || 'null'); if (c && c.radar) { D.radar = c.radar; D.radarFonte = 'cópia'; } if (c && c.taxas) D.taxas = c.taxas; if (c && c.div && c.div.ativos && c.div.ativos.length) D.div = c.div; } catch (e) {}
+const T = () => Object.assign({}, TAXAS_PADRAO, (SNAPSHOT && SNAPSHOT.taxas) || {}, D.taxas || {});
+async function carregar(forcar) {
+  if (D.carregando) return; D.carregando = true;
+  try {
+    const [r, t, dv] = await Promise.allSettled([
+      fetch('./api/radar' + (forcar ? '?t=' + Date.now() : '')).then((x) => x.ok ? x.json() : Promise.reject(x.status)),
+      fetch('./api/taxas').then((x) => x.ok ? x.json() : Promise.reject(x.status)),
+      fetch('./api/dividendos').then((x) => x.ok ? x.json() : Promise.reject(x.status))
+    ]);
+    if (r.status === 'fulfilled' && r.value.ativos && r.value.ativos.length) { D.radar = r.value; D.radarFonte = 'ao vivo'; }
+    if (t.status === 'fulfilled') D.taxas = t.value;
+    if (dv.status === 'fulfilled' && dv.value.ativos && dv.value.ativos.length) D.div = dv.value;
+    try { localStorage.setItem('9pilla.cache', JSON.stringify({ radar: D.radar, taxas: D.taxas, div: D.div })); } catch (e) {}
+    if (forcar) toast(D.radarFonte === 'ao vivo' ? 'Dados de mercado atualizados' : 'Sem conexão com o mercado agora; mostrando a última leitura');
+  } finally { D.carregando = false; render(); }
+}
+
+/* ============ Roteamento ============ */
+const UI = { opTab: 'radar', cen: 'alta', rf: { valor: 5000, meses: 24 }, meta: { obj: 'reserva', meta: 15000, aporte: 500 },
+  sim: { t: 'PETR4', tipo: 'call', k: null, p: 2, s: null }, pix: { chave: '', valor: '' }, guardar: { valor: '' },
+  div: { sel: ['PETR4', 'VALE3', 'ITUB4', 'BBAS3', 'BBSE3', 'TAEE11'], renda: 1000, aporte: 500, anos: 10, aberto: null } };
+const NAV = [['inicio', 'Início', 'home'], ['investir', 'Investir', 'trend'], ['opcoes', 'Opções', 'radar'], ['pix', 'Pix', 'pix'], ['perfil', 'Perfil', 'user']];
+const SECAO = { 'renda-fixa': 'investir', metas: 'investir', acoes: 'investir', dividendos: 'investir', guardar: 'inicio', extrato: 'inicio' };
+function rota() { return (location.hash.replace(/^#\/?/, '') || 'inicio').split('?')[0]; }
+function render() {
+  const r = rota();
+  if (!conta) { $('#main').innerHTML = telaBoasVindas(); $('#nav').innerHTML = ''; return; }
+  const telas = { inicio: telaInicio, investir: telaInvestir, opcoes: telaOpcoes, pix: telaPix, perfil: telaPerfil,
+    'renda-fixa': telaRendaFixa, metas: telaMetas, guardar: telaGuardar, acoes: telaAcoes, extrato: telaExtrato, dividendos: telaDividendos };
+  const f = telas[r] || telaInicio;
+  $('#main').innerHTML = '<div class="demo">Modo demonstração: o saldo é fictício e nenhum dinheiro real é movimentado.</div>' + f();
+  const ativo = SECAO[r] || r;
+  $('#nav').innerHTML = NAV.map(([id, l, i]) => `<a href="#/${id}"${ativo === id ? ' aria-current="page"' : ''}>${ic(i)}${l}</a>`).join('');
+  pos();
+}
+let ultimaRota = null;
+function pos() { const r = rota(); if (r !== ultimaRota) { window.scrollTo(0, 0); ultimaRota = r; } }
+window.addEventListener('hashchange', render);
+
+/* ============ Boas-vindas ============ */
+function telaBoasVindas() {
+  return `<header class="hdr" style="padding-top:calc(40px + env(safe-area-inset-top));gap:18px">
+    <div class="toprow">${logo()}</div>
+    <h1 class="big" style="font-size:42px">Dinheiro não é destino. É a jornada para a <span class="hl">liberdade</span>.</h1>
+    <p class="sub">A 9Pilla ajuda você a entender o mercado e a fazer o dinheiro render, um pouco melhor a cada dia.</p>
+  </header>
+  <div class="wrap">
+    <form class="card" data-form="entrar">
+      <div class="field"><label for="nome">Como podemos te chamar?</label>
+      <input class="input" id="nome" name="nome" autocomplete="given-name" maxlength="30" required placeholder="Seu primeiro nome"></div>
+      <button class="btn menta" type="submit">Abrir minha conta 9Pilla</button>
+      <p class="muted">Sua conta começa em modo demonstração, com R$ 1,00 fictício para você experimentar Pix, caixinha e simuladores sem risco. Seus dados ficam só neste aparelho.</p>
+    </form>
+  </div>
+  <p class="legal">A 9Pilla ainda não é instituição autorizada pelo Banco Central do Brasil. Conteúdo educacional, não é recomendação de investimento (Resolução CVM 20).</p>`;
+}
+
+/* ============ Início ============ */
+function resumoRadar() {
+  const a = (D.radar && D.radar.ativos) || [];
+  const c = { alta: 0, lateral: 0, queda: 0, observar: 0 };
+  a.forEach((x) => c[x.cenario]++);
+  return { a, c };
+}
+function telaInicio() {
+  renderCaixinha();
+  const vis = conta.mostrar;
+  const { a, c } = resumoRadar();
+  const tx = T();
+  const ext = conta.extrato.slice(0, 4).map(movHTML).join('');
+  const linhaRadar = a.length ? ['alta', 'lateral', 'queda', 'observar'].filter((k) => c[k]).map((k) => `<span class="badge b-${k}">${c[k]} ${k.toUpperCase()}</span>`).join(' ') : '<span class="muted">Carregando a leitura do mercado…</span>';
+  return `<header class="hdr navy" style="padding-bottom:70px">
+    <div class="toprow">${logo()}
+      <a class="iconbtn" href="#/perfil" aria-label="Meu perfil" style="background:var(--logo);border:none;color:var(--floresta);font-weight:800">${esc(conta.nome.slice(0, 2).toUpperCase())}</a></div>
+    <div><p class="sub" style="font-size:15px">Olá, ${esc(conta.nome)}</p>
+    <h1 class="big" style="font-size:30px">Sua jornada para a <span class="hl">liberdade</span></h1></div>
+  </header>
+  <div class="wrap" style="margin-top:-52px">
+    <section class="card" style="box-shadow:0 8px 24px rgba(18,43,74,.12)">
+      <div class="row"><span class="muted" style="font-weight:700">Saldo em conta</span>
+        <button class="iconbtn" data-act="olho" aria-label="${vis ? 'Ocultar saldo' : 'Mostrar saldo'}" style="background:var(--mentaClaro);border:none;color:var(--floresta)">${ic(vis ? 'eye' : 'eyeOff', 20)}</button></div>
+      <span class="money">${vis ? brl(conta.saldo) : 'R$ ••••••'}</span>
+      <div class="row small"><span class="muted">Na caixinha (100% do CDI): <strong style="color:var(--marinho)">${vis ? brl(conta.caixinha) : '••••'}</strong></span>
+        <a href="#/extrato" style="font-weight:800;text-decoration:none">Extrato</a></div>
+    </section>
+    <nav aria-label="Ações rápidas" class="grid4" style="margin-top:6px">
+      <a class="qa on" href="#/pix"><span class="ic">${ic('pix', 26)}</span>Pix</a>
+      <a class="qa" href="#/guardar"><span class="ic">${ic('down', 26)}</span>Guardar</a>
+      <a class="qa" href="#/investir"><span class="ic">${ic('trend', 26)}</span>Investir</a>
+      <a class="qa" href="#/dividendos"><span class="ic">${ic('coin', 26)}</span>Dividendos</a>
+    </nav>
+    ${cardDividendos()}
+    <a class="card dark" href="#/opcoes" style="text-decoration:none">
+      <div class="row"><span class="eyebrow">Radar de opções · hoje</span>${ic('chev', 20)}</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">${linhaRadar}</div>
+      <span class="small" style="color:var(--mentaClaro)">Alta, lateral, queda ou observar? Veja a leitura de PETR4, VALE3, bancos e BOVA11 explicada em português simples.</span>
+    </a>
+    <section class="grid3">
+      <div class="card" style="padding:12px;gap:2px"><span class="small muted">Selic</span><strong>${pct(tx.selic)}</strong></div>
+      <div class="card" style="padding:12px;gap:2px"><span class="small muted">CDI</span><strong>${pct(tx.cdi)}</strong></div>
+      <div class="card" style="padding:12px;gap:2px"><span class="small muted">Inflação 12m</span><strong>${pct(tx.ipca12)}</strong></div>
+    </section>
+    <section class="card mint">
+      <span class="eyebrow">Educação 9Pilla</span>
+      <span style="font-family:'Anton',sans-serif;font-size:24px;text-transform:uppercase;line-height:1.15">${dicaDoDia()}</span>
+      <a class="btn small" href="#/renda-fixa" style="align-self:flex-start">Ver quanto meu dinheiro rende</a>
+    </section>
+    <section class="card"><h2>Últimas movimentações</h2>${ext || '<p class="muted">Nenhuma movimentação ainda.</p>'}</section>
+  </div>
+  <p class="legal">A 9Pilla ainda não é instituição autorizada pelo Banco Central do Brasil; contas reais dependerão de autorização ou de parceria com instituição autorizada. Conteúdo educacional, não é recomendação de investimento.</p>`;
+}
+function dicaDoDia() {
+  const d = ['Reserva de emergência primeiro, bolsa depois.', 'Com a Selic alta, a poupança perde para quase toda renda fixa.', 'Constância no aporte vale mais que achar o investimento perfeito.', 'Quando o cenário não está claro, não fazer nada também é decisão.', 'Juros compostos trabalham para quem começa cedo.', 'Diversificar é não depender de uma única empresa.', 'Opção é contrato com prazo: o tempo derrete o prêmio.'];
+  return d[new Date().getDate() % d.length];
+}
+function movHTML(m) {
+  const dt = new Date(m.ts);
+  const quando = dt.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }) + ', ' + dt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  const v = m.valor || m.extra || 0;
+  return `<div class="mov"><div><div class="t">${esc(m.desc)}</div><div class="small muted">${quando}</div></div>
+    <span class="${v > 0 ? 'pos' : ''}" style="font-weight:800;white-space:nowrap">${v > 0 ? '+ ' : '− '}${brl(Math.abs(v))}</span></div>`;
+}
+function telaExtrato() {
+  return `<header class="hdr navy"><div class="toprow"><a class="iconbtn" href="#/inicio" aria-label="Voltar">${ic('back', 20)}</a>${logo()}</div>
+    <h1 class="big">Extrato</h1></header>
+  <div class="wrap"><section class="card">${conta.extrato.map(movHTML).join('') || '<p class="muted">Sem movimentações.</p>'}</section></div>`;
+}
+
+/* ============ Pix (demonstração) ============ */
+function telaPix() {
+  const v = num(UI.pix.valor);
+  return `<header class="hdr menta"><div class="toprow"><a class="iconbtn" href="#/inicio" aria-label="Voltar">${ic('back', 20)}</a>${logo()}</div>
+    <h1 class="big">Área <span class="hl">Pix</span></h1>
+    <p class="sub">Saldo disponível: <strong>${brl(conta.saldo)}</strong></p></header>
+  <div class="wrap">
+    <form class="card" data-form="pix">
+      <div class="field"><label for="pix-chave">Para quem?</label>
+        <input class="input" id="pix-chave" name="chave" data-bind="pix.chave" value="${esc(UI.pix.chave)}" placeholder="CPF, celular, e-mail ou chave aleatória" autocomplete="off" required maxlength="77"></div>
+      <div class="field"><label for="pix-valor">Valor</label>
+        <input class="input" id="pix-valor" name="valor" data-bind="pix.valor" value="${esc(UI.pix.valor)}" inputmode="decimal" placeholder="R$ 0,00" required style="font-size:24px;font-weight:800"></div>
+      <div class="grid3">${[20, 50, 100].map((x) => `<button type="button" class="pill" data-act="pixrapido" data-v="${x}">+ ${brl(x, 0)}</button>`).join('')}</div>
+      <button class="btn" type="submit" id="pix-btn" ${v > 0 && v <= conta.saldo ? '' : 'disabled'}>Enviar Pix de ${brl(v)}</button>
+      <p class="small neg${v > conta.saldo ? '' : ' hide'}" id="pix-aviso">Valor maior que o saldo disponível.</p>
+    </form>
+    <section class="card">
+      <h2>Testar recebimento</h2>
+      <p class="muted">Simule alguém te pagando por Pix para ver o saldo entrar.</p>
+      <button class="btn ghost small" data-act="pixreceber">Simular Pix recebido de R$ 1,00</button>
+    </section>
+    <section class="card mint"><span class="eyebrow">Segurança</span>
+      <p class="small">Confira sempre o nome de quem vai receber antes de confirmar. Pix noturno (20h às 6h) tem limite reduzido por regra do Banco Central. Nenhum banco pede senha ou código por telefone.</p></section>
+  </div>`;
+}
+
+/* ============ Guardar (caixinha) ============ */
+function telaGuardar() {
+  renderCaixinha();
+  const v = num(UI.guardar.valor);
+  const tx = T();
+  const mes = conta.caixinha * (Math.pow(1 + tx.cdi / 100, 21 / 252) - 1);
+  return `<header class="hdr"><div class="toprow"><a class="iconbtn" href="#/inicio" aria-label="Voltar">${ic('back', 20)}</a>${logo()}</div>
+    <h1 class="big">Recebeu, <span class="hl">guardou!</span></h1>
+    <p class="sub">A caixinha rende 100% do CDI (${pct(tx.cdi)} ao ano) com liquidez diária. Separe o dinheiro do mês e deixe render.</p></header>
+  <div class="wrap">
+    <section class="card navy"><span class="eyebrow">Na caixinha</span><span class="money" style="color:#fff">${brl(conta.caixinha)}</span>
+      <span class="small" style="color:var(--mentaClaro)">Rende cerca de ${brl(mes)} por mês no ritmo de hoje, antes do imposto.</span></section>
+    <section class="card">
+      <div class="field"><label for="g-valor">Quanto mover?</label>
+        <input class="input" id="g-valor" data-bind="guardar.valor" value="${esc(UI.guardar.valor)}" inputmode="decimal" placeholder="R$ 0,00" style="font-size:24px;font-weight:800"></div>
+      <div class="grid3">${[50, 100, 500].map((x) => `<button type="button" class="pill" data-act="grapido" data-v="${x}">+ ${brl(x, 0)}</button>`).join('')}</div>
+      <div class="grid2">
+        <button class="btn menta" id="g-guardar" data-act="guardar" ${v > 0 && v <= conta.saldo ? '' : 'disabled'}>Guardar</button>
+        <button class="btn ghost" id="g-resgatar" data-act="resgatar" ${v > 0 && v <= conta.caixinha ? '' : 'disabled'}>Resgatar</button>
+      </div>
+      <p class="small muted">Saldo em conta: ${brl(conta.saldo)}</p>
+    </section>
+    <section class="card mint"><span class="eyebrow">Por que guardar primeiro</span>
+      <p class="small">Quem separa uma parte de tudo que recebe, antes de gastar, constrói a reserva sem depender de sobra no fim do mês. Comece com 10% e aumente aos poucos.</p></section>
+  </div>
+  <p class="legal">Simulação em modo demonstração. Rendimento calculado com o CDI do Banco Central de ${esc(tx.data)}, sem IR e IOF. Rentabilidade passada não garante rentabilidade futura.</p>`;
+}
+
+/* ============ Investir ============ */
+function telaInvestir() {
+  const tx = T();
+  return `<header class="hdr"><div class="toprow">${logo()}</div>
+    <h1 class="big">Investir com <span class="hl">método</span></h1>
+    <p class="sub">Entenda primeiro, invista depois. Cada ferramenta abaixo usa dados reais do mercado e do Banco Central.</p></header>
+  <div class="wrap">
+    ${linkCard('#/dividendos', 'coin', 'Renda com dividendos', 'Quanto PETR4, VALE3, bancos e outras pagadoras distribuíram em 12 meses, e quanto você precisa para viver de proventos')}
+    ${linkCard('#/renda-fixa', 'coin', 'Renda fixa que rende', 'Compare poupança, Tesouro, CDB e LCI com a Selic de hoje (' + pct(tx.selic) + ')')}
+    ${linkCard('#/metas', 'target', 'Metas', 'Descubra em quanto tempo chega na reserva, na casa ou na renda para a vida')}
+    ${linkCard('#/acoes', 'trend', 'Ações acompanhadas', 'PETR4, VALE3, ITUB4, BBDC4, BBAS3 e BOVA11 com preço e leitura do dia')}
+    ${linkCard('#/opcoes', 'radar', 'Opções: entenda o cenário', 'Radar de alta, lateral, queda ou observar, estratégias, simulador e vencimentos')}
+    ${linkCard('#/perfil', 'user', 'Meu perfil de investidor', 'Questionário de 5 perguntas e carteira de referência para entender e comparar')}
+  </div>
+  <p class="legal">Conteúdo educacional, não é recomendação de investimento (Resolução CVM 20). Antes de investir, confirme seu perfil com a instituição onde você investe (Resolução CVM 30).</p>`;
+}
+function linkCard(href, i, t, d) {
+  return `<a class="card" href="${href}" style="flex-direction:row;align-items:center;gap:14px;text-decoration:none;color:var(--marinho)">
+    <span style="width:48px;height:48px;flex:0 0 auto;border-radius:14px;background:var(--mentaClaro);color:var(--floresta);display:flex;align-items:center;justify-content:center">${ic(i, 24)}</span>
+    <span style="flex:1;display:flex;flex-direction:column;gap:2px"><strong style="font-size:15px">${t}</strong><span class="small muted">${d}</span></span>${ic('chev', 18)}</a>`;
+}
+function telaAcoes() {
+  const a = (D.radar && D.radar.ativos) || [];
+  return `<header class="hdr navy"><div class="toprow"><a class="iconbtn" href="#/investir" aria-label="Voltar">${ic('back', 20)}</a>${logo()}</div>
+    <h1 class="big">Ações <span class="hl">acompanhadas</span></h1>
+    <p class="sub">Energia, mineração, bancos e o índice. Ativos acompanhados para estudo, não carteira obrigatória.</p></header>
+  <div class="wrap">${a.length ? a.map((x) => `<a class="card" href="#/opcoes" data-act="vertick" data-t="${x.ticker}" style="text-decoration:none;color:var(--marinho)">
+      <div class="row"><div><strong style="font-size:18px">${x.ticker}</strong><div class="small muted">${esc(x.nome)} · ${esc(x.setor)}</div></div>
+      <div style="text-align:right"><strong style="font-size:17px">${x.preco}</strong><div class="${x.varPos ? 'pos' : 'neg'} small">${x.var}</div></div></div>
+      ${grafico(x)}
+      <div class="row"><span class="badge b-${x.cenario}">${x.cenario.toUpperCase()}</span><span class="small muted">IFR ${x.ifr} · vol. ${x.vol}</span></div></a>`).join('') : '<div class="skeleton"></div>'}
+  </div>
+  <p class="legal">Preços com atraso, fontes BRAPI e Yahoo Finance. Ações não têm garantia do FGC. Rentabilidade passada não garante rentabilidade futura.</p>`;
+}
+
+/* ============ Renda fixa ============ */
+function telaRendaFixa() {
+  const tx = T(); const { valor: v, meses: m } = UI.rf;
+  const dias = m * 30.4;
+  const ir = dias <= 180 ? 0.225 : dias <= 360 ? 0.20 : dias <= 720 ? 0.175 : 0.15;
+  const anos = m / 12, cresce = (aa) => Math.pow(1 + aa / 100, anos);
+  const liq = (b, isento) => v + (b - v) * (isento ? 1 : 1 - ir);
+  const lista = [
+    ['Poupança', pct(tx.poupMes) + ' ao mês · isenta', v * Math.pow(1 + tx.poupMes / 100, m), true, 'Rende menos quando a Selic está acima de 8,5% ao ano, como agora.'],
+    ['Tesouro Selic', 'Selic ' + pct(tx.selic) + ' ao ano · com IR', v * cresce(tx.selic), false, 'Título do governo federal, liquidez diária. Bom lugar para a reserva de emergência.'],
+    ['CDB 100% do CDI', pct(tx.cdi) + ' ao ano · com IR', v * cresce(tx.cdi), false, 'Empréstimo para um banco, com garantia do FGC.'],
+    ['CDB 110% do CDI', pct(tx.cdi * 1.1) + ' ao ano · com IR', v * cresce(tx.cdi * 1.1), false, 'Bancos médios costumam pagar mais. Fique dentro do limite do FGC por instituição.'],
+    ['LCI ou LCA 90% do CDI', pct(tx.cdi * 0.9) + ' ao ano · isenta', v * cresce(tx.cdi * 0.9), true, 'Isenta de IR para pessoa física e com FGC. Costuma ter carência.']
+  ].map(([nome, taxa, b, is, nota]) => ({ nome, taxa, nota, l: liq(b, is) })).sort((a, b) => b.l - a.l);
+  const max = lista[0].l, poup = lista.find((p) => p.nome === 'Poupança');
+  const realAa = ((1 + (tx.cdi / 100) * (1 - ir)) / (1 + tx.ipca12 / 100) - 1) * 100;
+  const prazos = [[6, '6 meses'], [12, '1 ano'], [24, '2 anos'], [60, '5 anos']];
+  const rot = prazos.find((p) => p[0] === m)[1];
+  return `<header class="hdr"><div class="toprow"><a class="iconbtn" href="#/investir" aria-label="Voltar">${ic('back', 20)}</a>${logo()}</div>
+    <h1 class="big">Seu dinheiro pode render <span class="hl">mais</span></h1>
+    <div class="grid3 small" style="color:var(--mentaClaro)">
+      <span class="card" style="background:rgba(239,239,228,.08);padding:8px;gap:2px">Selic<strong style="color:#fff;font-size:15px">${pct(tx.selic)}</strong></span>
+      <span class="card" style="background:rgba(239,239,228,.08);padding:8px;gap:2px">CDI<strong style="color:#fff;font-size:15px">${pct(tx.cdi)}</strong></span>
+      <span class="card" style="background:rgba(239,239,228,.08);padding:8px;gap:2px">Inflação 12m<strong style="color:#fff;font-size:15px">${pct(tx.ipca12)}</strong></span></div>
+    <span class="small" style="color:var(--mentaClaro)">Taxas do Banco Central de ${esc(tx.data)}</span></header>
+  <div class="wrap">
+    <section class="card">
+      <label for="rf-v" class="row" style="font-weight:700;font-size:13px">Quanto investir<strong style="font-size:22px">${brl(v, 0)}</strong></label>
+      <input id="rf-v" type="range" min="100" max="50000" step="100" value="${v}" data-range="rf.valor">
+      <span style="font-weight:700;font-size:13px">Por quanto tempo</span>
+      <div class="grid4">${prazos.map(([mm, l]) => `<button class="pill" style="padding:0 4px" aria-pressed="${mm === m}" data-act="rfprazo" data-v="${mm}">${l}</button>`).join('')}</div>
+    </section>
+    <section class="card navy"><span class="eyebrow">Diferença que fica no seu bolso</span>
+      <p style="font-size:15px;line-height:1.5">Com ${brl(v, 0)} por ${rot}, ${lista[0].nome} deixaria ${brl(lista[0].l - poup.l, 0)} a mais que a poupança, já descontado o imposto. Acima da inflação, a renda fixa pós-fixada rende hoje cerca de ${pct(realAa, 1)} ao ano de ganho real.</p></section>
+    ${lista.map((p, i) => `<article class="card" style="gap:8px">
+      <div class="row"><strong>${p.nome}</strong><strong style="color:var(--verdeTexto);font-size:17px">${brl(p.l, 0)}</strong></div>
+      <div class="bar" role="img" aria-label="${p.nome}: ${brl(p.l, 0)} no fim do prazo"><div style="width:${Math.max(8, (p.l - v) / (max - v) * 100).toFixed(1)}%;background:${i === 0 ? 'var(--menta)' : p.nome === 'Poupança' ? '#8A97A8' : 'var(--logo)'}"></div></div>
+      <div class="row small muted"><span>${p.taxa}</span><span>Ganho ${brl(p.l - v, 0)}</span></div>
+      <span class="small muted">${p.nota}</span></article>`).join('')}
+    <section class="card mint"><span class="eyebrow">Imposto de renda</span>
+      <p class="small">Tabela regressiva: 22,5% até 180 dias, 20% até 360, 17,5% até 720 e 15% depois. LCI, LCA e poupança são isentas para pessoa física. Neste prazo, o IR é de ${pct(ir * 100, 1)}.</p></section>
+  </div>
+  <p class="legal">Simulação educativa com as taxas de hoje mantidas constantes; o resultado real será diferente. Não considera IOF nem custódia do Tesouro. CDB, LCI e LCA têm FGC até R$ 250 mil por CPF por instituição. Conteúdo educacional, não é recomendação (Resolução CVM 20).</p>`;
+}
+
+/* ============ Metas ============ */
+function telaMetas() {
+  const tx = T(); const { meta, aporte } = UI.meta;
+  const realAa = (1 + (tx.cdi / 100) * 0.85) / (1 + tx.ipca12 / 100) - 1;
+  const poupReal = Math.pow(1 + tx.poupMes / 100, 12) / (1 + tx.ipca12 / 100) - 1;
+  const mensal = (aa) => Math.pow(1 + aa, 1 / 12) - 1;
+  const meses = (M, ap, r) => r <= 0 ? Math.ceil(M / ap) : Math.ceil(Math.log(M * r / ap + 1) / Math.log(1 + r));
+  const fp = (n) => { const a = Math.floor(n / 12), m = n % 12; const pa = a ? a + (a === 1 ? ' ano' : ' anos') : ''; const pm = m ? m + (m === 1 ? ' mês' : ' meses') : ''; return pa && pm ? pa + ' e ' + pm : (pa || pm || 'já chegou'); };
+  const n = meses(meta, aporte, mensal(realAa)), nP = meses(meta, aporte, mensal(poupReal)), nC = Math.ceil(meta / aporte), n2 = meses(meta, aporte + 100, mensal(realAa));
+  const ap = Math.min(meta, aporte * n), pa = ap / meta * 100;
+  const OBJ = [['reserva', 'Reserva de emergência', '6 meses de gastos', 15000, 500], ['casa', 'Entrada da casa', '20% de um imóvel', 80000, 1000], ['sonho', 'Um sonho', 'viagem, carro, estudo', 20000, 600], ['liberdade', 'Renda para a vida', 'viver de renda', 1000000, 2000]];
+  return `<header class="hdr"><div class="toprow"><a class="iconbtn" href="#/investir" aria-label="Voltar">${ic('back', 20)}</a>${logo()}</div>
+    <h1 class="big">Quando você chega <span class="hl">lá</span>?</h1>
+    <p class="sub">Escolha uma meta, diga quanto guarda por mês e veja os juros compostos trabalhando.</p></header>
+  <div class="wrap">
+    <div class="grid2">${OBJ.map(([id, l, d, mt, a]) => `<button class="opt" style="background:${UI.meta.obj === id ? 'var(--marinho)' : '#fff'};border-color:${UI.meta.obj === id ? 'var(--marinho)' : '#fff'};color:${UI.meta.obj === id ? '#fff' : 'var(--marinho)'};min-height:64px" aria-pressed="${UI.meta.obj === id}" data-act="metaobj" data-id="${id}" data-m="${mt}" data-a="${a}"><strong style="display:block">${l}</strong><span style="font-size:11px;font-weight:600">${d}</span></button>`).join('')}</div>
+    <section class="card">
+      <label for="mt-m" class="row" style="font-weight:700;font-size:13px">Valor da meta<strong style="font-size:20px">${brl(meta, 0)}</strong></label>
+      <input id="mt-m" type="range" min="1000" max="1000000" step="1000" value="${meta}" data-range="meta.meta">
+      <label for="mt-a" class="row" style="font-weight:700;font-size:13px">Quanto guardo por mês<strong style="font-size:20px">${brl(aporte, 0)}</strong></label>
+      <input id="mt-a" type="range" min="50" max="10000" step="50" value="${aporte}" data-range="meta.aporte">
+    </section>
+    <section class="card dark"><span class="eyebrow">Investindo na renda fixa</span>
+      <span style="font-family:'Anton',sans-serif;font-size:40px;line-height:1;color:#fff">${fp(n)}</span>
+      <div style="display:flex;height:14px;border-radius:7px;overflow:hidden;background:rgba(239,239,228,.15)" role="img" aria-label="${Math.round(pa)}% vem do que você guardou e ${Math.round(100 - pa)}% dos juros"><div style="width:${pa.toFixed(1)}%;background:var(--logo)"></div><div style="width:${(100 - pa).toFixed(1)}%;background:var(--lima)"></div></div>
+      <span class="small" style="color:var(--mentaClaro)">Você guardou ${brl(ap, 0)} · juros fizeram ${brl(Math.max(0, meta - ap), 0)}</span>
+      <p style="font-size:14px;line-height:1.5">Guardando sem investir, levaria ${fp(nC)}. Na poupança, ${fp(nP)}.</p></section>
+    <section class="card mint"><span class="eyebrow">E se guardar um pouco mais?</span>
+      <p class="small">Com ${brl(aporte + 100, 0)} por mês, você chega em ${fp(n2)}${n - n2 > 0 ? ' (' + fp(n - n2) + ' antes)' : ''}. O que mais acelera uma meta é a constância do aporte.</p></section>
+  </div>
+  <p class="legal">Simulação em dinheiro de hoje: usa o CDI atual (${pct(tx.cdi)}), desconta 15% de IR e a inflação de 12 meses (${pct(tx.ipca12)}), e supõe taxas constantes. Conteúdo educacional, não é recomendação (Resolução CVM 20).</p>`;
+}
+
+/* ============ Perfil ============ */
+const PERG = [
+  ['obj', 'Para que é esse dinheiro?', ['Proteger o que já tenho', 'Crescer com equilíbrio', 'Crescer o máximo, aceitando oscilação']],
+  ['prazo', 'Quando você pode precisar dele?', ['Em menos de 1 ano', 'Entre 1 e 5 anos', 'Daqui a mais de 5 anos']],
+  ['queda', 'Se o investimento caísse 20% em um mês, você...', ['Resgataria tudo', 'Esperaria recuperar', 'Investiria mais, com calma']],
+  ['exp', 'O que você já investiu?', ['Só poupança ou nada', 'Renda fixa ou fundos', 'Ações, FIIs ou outros']],
+  ['reserva', 'Você tem reserva de emergência?', ['Ainda não', 'Tenho uma parte', 'Tenho completa']]
+];
+const CART = {
+  conservador: ['Prioridade é não perder. A carteira fica quase toda em renda fixa, que hoje já paga bem acima da inflação.',
+    [['Pós-fixado com liquidez diária', 50], ['Renda fixa com prazo', 30], ['Tesouro IPCA+', 15], ['Fundos imobiliários', 5]],
+    'não indicadas para este perfil. No app, o conteúdo de opções fica disponível só para estudo.'],
+  moderado: ['Busca crescer acima da renda fixa aceitando alguma oscilação. A base segue em renda fixa e uma parte vai para a bolsa, de forma diversificada.',
+    [['Pós-fixado com liquidez diária', 40], ['Tesouro IPCA+', 20], ['Ações via ETF', 20], ['Fundos imobiliários', 15], ['Exterior', 5]],
+    'só com objetivo de proteção (como compra de put) e depois de entender o risco de perder todo o prêmio.'],
+  arrojado: ['Aceita oscilações fortes em busca de mais retorno no longo prazo. A renda fixa continua importante, porque com a Selic alta ela paga muito bem.',
+    [['Pós-fixado com liquidez diária', 25], ['Tesouro IPCA+', 15], ['Ações via ETF e ações', 30], ['Fundos imobiliários', 20], ['Exterior', 10]],
+    'liberadas para quem assinar o termo de ciência de risco. Mantenha pequeno o valor exposto: quem compra pode perder todo o prêmio.']
+};
+function perfilAtual() {
+  const r = conta.perfil || {};
+  if (Object.keys(r).length < PERG.length) return null;
+  const t = Object.values(r).reduce((a, b) => a + b, 0);
+  let p = t <= 3 ? 'conservador' : t <= 7 ? 'moderado' : 'arrojado';
+  if (r.prazo === 0 && p === 'arrojado') p = 'moderado';
+  return p;
+}
+function telaPerfil() {
+  const r = conta.perfil || {}; const p = perfilAtual();
+  const cor = ['#122B4A', '#09C797', '#7DF14E', '#3D5470', '#8FA8C8'];
+  let res = `<p class="muted" style="padding:0 4px">Faltam ${PERG.length - Object.keys(r).length} respostas para ver seu perfil.</p>`;
+  if (p) {
+    const [txt, f, op] = CART[p];
+    res = `<section class="card dark"><span class="eyebrow">Seu perfil</span><span style="font-family:'Anton',sans-serif;font-size:38px;text-transform:uppercase;line-height:1;color:#fff">${p}</span><p style="font-size:14px;line-height:1.5">${txt}</p></section>
+    ${r.reserva < 2 ? `<a class="card warn" href="#/metas" style="text-decoration:none"><strong>Primeiro passo: a reserva de emergência</strong><span class="small">Junte de 6 a 12 meses de gastos em liquidez diária antes de seguir a divisão abaixo. Calcular minha reserva →</span></a>` : ''}
+    <section class="card"><h2>Carteira de referência para o perfil ${p}</h2>
+      <div style="display:flex;height:16px;border-radius:8px;overflow:hidden" role="img" aria-label="${f.map((x) => x[0] + ' ' + x[1] + '%').join(', ')}">${f.map((x, i) => `<div style="width:${x[1]}%;background:${cor[i]}"></div>`).join('')}</div>
+      ${f.map((x, i) => `<div class="row"><span style="display:flex;gap:8px;align-items:center"><span style="width:12px;height:12px;border-radius:6px;background:${cor[i]}"></span>${x[0]}</span><strong>${x[1]}%</strong></div>`).join('')}
+      <p class="small muted" style="background:var(--creme);border-radius:10px;padding:10px"><strong style="color:var(--marinho)">Opções:</strong> ${op}</p></section>`;
+  }
+  return `<header class="hdr"><div class="toprow">${logo()}</div>
+    <h1 class="big">Sua carteira, do <span class="hl">seu jeito</span></h1>
+    <p class="sub">Olá, ${esc(conta.nome)}. Responda 5 perguntas (Resolução CVM 30) e veja uma divisão de carteira para entender e comparar.</p></header>
+  <div class="wrap">
+    ${PERG.map(([id, t, ops], i) => `<fieldset class="card" style="border:none;margin:0"><legend class="sr">${t}</legend><strong style="font-size:14px">${i + 1}. ${t}</strong>
+      ${ops.map((o, v) => `<button class="opt" aria-pressed="${r[id] === v}" data-act="perg" data-id="${id}" data-v="${v}">${o}</button>`).join('')}</fieldset>`).join('')}
+    ${res}
+    <section class="card"><h2>Minha conta</h2>
+      <p class="muted">Conta de demonstração criada em ${new Date(conta.criada).toLocaleDateString('pt-BR')}. Os dados ficam só neste aparelho.</p>
+      <button class="btn ghost small" data-act="reset">Recomeçar a demonstração</button></section>
+  </div>
+  <p class="legal">A carteira de referência é um exemplo educativo, não uma recomendação individual. Ações citadas no app, como PETR4, VALE3 e os bancos do radar, são ativos acompanhados para estudo, nunca alocação obrigatória (Resoluções CVM 20 e 30).</p>`;
+}
+
+/* ============ Dividendos ============ */
+function divAtivos() { return (D.div && D.div.ativos) || []; }
+function divCarteira() {
+  const a = divAtivos().filter((x) => UI.div.sel.includes(x.ticker));
+  const dy = a.length ? a.reduce((s, x) => s + x.dy, 0) / a.length : 0;
+  return { a, dy };
+}
+function cardDividendos() {
+  const { a, dy } = divCarteira();
+  if (!a.length) return '';
+  const capital = UI.div.renda * 12 / (dy / 100);
+  return `<a class="card navy" href="#/dividendos" style="text-decoration:none">
+    <div class="row"><span class="eyebrow">Renda com dividendos</span>${ic('chev', 20)}</div>
+    <span style="font-family:'Anton',sans-serif;font-size:26px;line-height:1.1;text-transform:uppercase;color:#fff">${brl(UI.div.renda, 0)} por mês pedem cerca de <span class="hl">${brl(capital, 0)}</span></span>
+    <span class="small" style="color:var(--mentaClaro)">No ritmo dos últimos 12 meses de ${a.map((x) => x.ticker).join(', ')} (média de ${pct(dy, 1)} ao ano). Toque para montar a sua.</span></a>`;
+}
+function telaDividendos() {
+  const todos = divAtivos();
+  const { a, dy } = divCarteira();
+  const d = UI.div;
+  const capital = dy > 0 ? d.renda * 12 / (dy / 100) : 0;
+  // bola de neve: aporte mensal + proventos reinvestidos (sem valorização do preço, para ficar conservador)
+  const rm = Math.pow(1 + dy / 100, 1 / 12) - 1;
+  let pat = 0; const serie = [];
+  for (let m = 1; m <= d.anos * 12; m++) { pat = pat * (1 + rm) + d.aporte; if (m % 12 === 0) serie.push(pat); }
+  const rendaFinal = pat * (dy / 100) / 12, aportado = d.aporte * d.anos * 12;
+  const W = 320, H = 110, maxP = Math.max(...serie, 1);
+  const barras = serie.map((v, i) => { const bw = W / serie.length - 4, x = i * (W / serie.length) + 2, h = v / maxP * (H - 22), ap = d.aporte * 12 * (i + 1) / maxP * (H - 22);
+    return `<rect x="${x.toFixed(1)}" y="${(H - 16 - h).toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="3" fill="#7DF14E"/><rect x="${x.toFixed(1)}" y="${(H - 16 - ap).toFixed(1)}" width="${bw.toFixed(1)}" height="${ap.toFixed(1)}" rx="3" fill="#2FCD7F"/>${(i + 1) % Math.ceil(serie.length / 5) === 0 || i === serie.length - 1 ? `<text x="${(x + bw / 2).toFixed(1)}" y="${H - 3}" text-anchor="middle" font-size="10" fill="#CEFBDA">${i + 1}a</text>` : ''}`; }).join('');
+  const quando = D.div ? esc(D.div.atualizado) : '';
+  return `<header class="hdr"><div class="toprow"><a class="iconbtn" href="#/investir" aria-label="Voltar">${ic('back', 20)}</a>${logo()}</div>
+    <h1 class="big">Dividendos: dinheiro que <span class="hl">pinga</span> na conta</h1>
+    <p class="sub">Parte do lucro das empresas volta para quem tem as ações. Veja quanto cada uma pagou em 12 meses e quanto você precisa para viver de proventos.</p></header>
+  <div class="wrap">
+    <section class="card dark"><span class="eyebrow">Quero receber por mês</span>
+      <label for="dv-r" class="row" style="font-weight:700;font-size:13px;color:var(--mentaClaro)">Renda mensal desejada<strong style="font-size:22px;color:#fff">${brl(d.renda, 0)}</strong></label>
+      <input id="dv-r" type="range" min="100" max="20000" step="100" value="${d.renda}" data-range="div.renda">
+      <span style="font-family:'Anton',sans-serif;font-size:38px;line-height:1;color:#fff">${dy > 0 ? brl(capital, 0) : 'Escolha ativos abaixo'}</span>
+      <span class="small" style="color:var(--mentaClaro)">É o valor investido que, no ritmo de proventos dos últimos 12 meses (média de ${pct(dy, 1)} ao ano das ${a.length} empresas escolhidas), teria pago ${brl(d.renda, 0)} por mês em média.</span>
+    </section>
+
+    <section class="card"><h2>Escolha as empresas</h2>
+      <p class="small muted">Toque para incluir ou tirar da conta. Ativos acompanhados para estudo, não carteira obrigatória.</p>
+      ${todos.map((x) => { const on = d.sel.includes(x.ticker); return `<div style="border-top:1px solid var(--linha);padding-top:10px;display:flex;flex-direction:column;gap:6px">
+        <div class="row"><button class="pill" aria-pressed="${on}" data-act="divsel" data-v="${x.ticker}" style="min-width:92px">${on ? '✓ ' : ''}${x.ticker}</button>
+          <div style="flex:1;min-width:0"><div class="small" style="font-weight:700">${esc(x.nome)}</div><div class="small muted">${esc(x.setor)} · R$ ${x.preco.toFixed(2).replace('.', ',')}</div></div>
+          <div style="text-align:right"><strong class="pos" style="font-size:17px">${pct(x.dy, 1)}</strong><div class="small muted">em 12 meses</div></div></div>
+        <div class="bar" aria-hidden="true"><div style="width:${Math.min(100, x.dy / 14 * 100).toFixed(0)}%;background:var(--menta)"></div></div>
+        <button class="small" data-act="divabre" data-v="${x.ticker}" aria-expanded="${d.aberto === x.ticker}" style="background:none;border:none;text-align:left;padding:4px 0;color:var(--verdeTexto);font-weight:800;cursor:pointer;min-height:32px">${d.aberto === x.ticker ? 'Esconder pagamentos' : 'Ver pagamentos: ' + x.n12 + ' em 12 meses, total R$ ' + x.total12.toFixed(2).replace('.', ',') + ' por ação'}</button>
+        ${d.aberto === x.ticker ? `<div class="small muted" style="background:var(--creme);border-radius:10px;padding:8px 10px">${x.ultimos.map((u) => `<div class="row"><span>${u.data}</span><strong style="color:var(--marinho)">R$ ${u.valor.toFixed(4).replace('.', ',')} por ação</strong></div>`).join('')}</div>` : ''}
+      </div>`; }).join('') || '<div class="skeleton"></div>'}
+      <span class="small" style="color:var(--nota)">Proventos (dividendos e JCP) por ação, fonte Yahoo Finance, atualizado em ${quando}. Rendimento = soma dos últimos 12 meses ÷ preço de hoje.</span>
+    </section>
+
+    <section class="card navy"><span class="eyebrow">Bola de neve</span>
+      <p style="font-size:14px;line-height:1.5">Investindo todo mês e reinvestindo os proventos nessas empresas:</p>
+      <label for="dv-a" class="row small" style="font-weight:700;color:var(--mentaClaro)">Aporte mensal<strong style="font-size:18px;color:#fff">${brl(d.aporte, 0)}</strong></label>
+      <input id="dv-a" type="range" min="50" max="10000" step="50" value="${d.aporte}" data-range="div.aporte">
+      <div class="grid4">${[5, 10, 20, 30].map((y) => `<button class="pill" style="padding:0 4px" aria-pressed="${d.anos === y}" data-act="divanos" data-v="${y}">${y} anos</button>`).join('')}</div>
+      <svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Patrimônio ano a ano até ${brl(pat, 0)} em ${d.anos} anos" style="background:transparent">${barras}</svg>
+      <div class="row small" style="color:var(--mentaClaro)"><span><span style="display:inline-block;width:10px;height:10px;border-radius:5px;background:#2FCD7F"></span> Você aportou ${brl(aportado, 0)}</span><span><span style="display:inline-block;width:10px;height:10px;border-radius:5px;background:#7DF14E"></span> Proventos somaram ${brl(pat - aportado, 0)}</span></div>
+      <p style="font-size:15px;line-height:1.5">Em ${d.anos} anos: patrimônio de <strong style="color:#fff">${brl(pat, 0)}</strong>, pagando cerca de <strong style="color:var(--lima)">${brl(rendaFinal, 0)} por mês</strong> em proventos.</p>
+    </section>
+
+    <section class="card mint"><span class="eyebrow">Entenda os proventos</span>
+      <p class="small"><strong>Dividendo:</strong> parte do lucro paga ao acionista. <strong>JCP (juros sobre capital próprio):</strong> outra forma de distribuir lucro, com 15% de IR retido na fonte.</p>
+      <p class="small"><strong>Data com:</strong> quem tem a ação no fim desse dia recebe. <strong>Data ex:</strong> no dia seguinte a ação passa a ser negociada sem o direito, e o preço costuma cair perto do valor do provento.</p>
+      <p class="small"><strong>Empresas cíclicas</strong> como Petrobras e Vale pagam muito em anos bons e pouco em anos ruins, porque dependem do petróleo e do minério. Bancos, seguradoras e transmissoras de energia costumam ser mais constantes.</p>
+      <p class="small"><strong>Imposto a partir de 2026 (Lei 15.270/2025):</strong> dividendos seguem isentos para a maioria das pessoas; há retenção de 10% só acima de R$ 50 mil por mês pagos pela mesma empresa, e um imposto mínimo para quem ganha mais de R$ 600 mil por ano.</p>
+    </section>
+  </div>
+  <p class="legal">Simulação educativa: supõe que as empresas continuem pagando o mesmo rendimento dos últimos 12 meses e ignora a variação do preço das ações e impostos. Proventos passados não garantem proventos futuros, e ações podem cair. Conteúdo educacional, não é recomendação de investimento (Resolução CVM 20).</p>`;
+}
+
+/* ============ Opções ============ */
+const NOMECEN = { alta: 'ALTA', lateral: 'LATERAL', queda: 'QUEDA', observar: 'OBSERVAR' };
+function grafico(a) {
+  const g = a.graf; if (!g || !g.c) return '';
+  const all = g.c.concat(g.m21, g.m50), lo = Math.min(...all), hi = Math.max(...all), W = 320, H = 80, pad = 4;
+  const pts = (arr) => arr.map((v, i) => (pad + i * (W - 2 * pad) / (arr.length - 1)).toFixed(1) + ',' + (H - pad - (v - lo) / (hi - lo || 1) * (H - 2 * pad)).toFixed(1)).join(' ');
+  const desc = `${a.ticker}, últimos ${g.c.length} pregões: de R$ ${g.c[0].toFixed(2).replace('.', ',')} para ${a.preco}; mínima R$ ${Math.min(...g.c).toFixed(2).replace('.', ',')}, máxima R$ ${Math.max(...g.c).toFixed(2).replace('.', ',')}`;
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${desc}">
+    <polyline points="${pts(g.m50)}" fill="none" stroke="#8A97A8" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <polyline points="${pts(g.m21)}" fill="none" stroke="#2FCD7F" stroke-width="2"/>
+    <polyline points="${pts(g.c)}" fill="none" stroke="#122B4A" stroke-width="2" stroke-linejoin="round"/></svg>`;
+}
+const ESTR = {
+  alta: ['Cenário de alta: o preço vem subindo de forma organizada. As estruturas abaixo ganham quando o ativo sobe. A entrada só faz sentido com o cenário confirmado e o risco definido antes.', [
+    ['Compra de call', '0,42 60,42 120,6', 'Você paga um prêmio pelo direito de comprar a ação por um preço combinado (strike) até o vencimento. Opções dentro do dinheiro (ITM) se movem mais parecido com a ação.', 'Cresce conforme a ação sobe', 'O prêmio pago'],
+    ['Trava de alta com calls', '0,44 45,44 80,14 120,14', 'Compra uma call e vende outra de strike mais alto. A call vendida barateia a operação, em troca de limitar o ganho.', 'Diferença entre strikes menos o custo', 'O custo líquido da trava']]],
+  lateral: ['Cenário lateral: o preço anda de lado, sem tendência. Aqui o tempo trabalha a favor de quem vende prêmio, porque opções perdem valor a cada dia que passa.', [
+    ['Venda coberta', '0,58 70,16 120,16', 'Você já tem a ação e vende uma call sobre ela, recebendo o prêmio como renda. Se a ação passar do strike, pode ser exercido e vender a ação por aquele preço.', 'Prêmio mais a alta até o strike', 'A queda da ação (o prêmio amortece um pouco)'],
+    ['Borboleta com calls', '0,40 40,40 60,10 80,40 120,40', 'Compra uma call de strike baixo, vende duas no meio e compra uma de strike alto. Ganha mais se o preço terminar perto do strike do meio.', 'Distância entre strikes menos o custo', 'O custo da montagem']]],
+  queda: ['Cenário de queda: o preço vem caindo de forma organizada. Para quem já tem a ação, opções servem de seguro. Para quem quer se posicionar na queda, existem estruturas com risco definido.', [
+    ['Compra de put (proteção)', '0,6 60,42 120,42', 'Você paga um prêmio pelo direito de vender a ação por um preço combinado. Funciona como um seguro: se a ação despencar, a put compensa.', 'Cresce conforme a ação cai', 'O prêmio pago'],
+    ['Trava de baixa com puts', '0,14 40,14 75,44 120,44', 'Compra uma put e vende outra de strike mais baixo. Reduz o custo da proteção, mas limita o ganho na queda.', 'Diferença entre strikes menos o custo', 'O custo líquido da trava']]],
+  observar: ['Observar também é uma decisão. Quando o método vê sinais misturados ou um movimento esticado demais (IFR acima de 70 ou abaixo de 30), a postura disciplinada é ficar de fora e preservar capital.', [
+    ['Ficar de fora', '0,30 120,30', 'Sem posição nova, o dinheiro segue rendendo na renda fixa enquanto o cenário se define. Operar sem clareza é o caminho mais comum para perder dinheiro em opções.', 'O rendimento da renda fixa', 'Perder parte de um movimento que ainda não estava claro']]]
+};
+const GLOSS = [['Call', 'Direito de COMPRAR a ação por um preço combinado até o vencimento. Ganha valor quando a ação sobe.'], ['Put', 'Direito de VENDER a ação por um preço combinado até o vencimento. Ganha valor quando a ação cai.'], ['Strike', 'O preço combinado no contrato da opção (preço de exercício).'], ['Prêmio', 'O valor pago por quem compra a opção e recebido por quem vende.'], ['Vencimento', 'Data em que a opção deixa de existir. Na B3, opções sobre ações vencem na terceira sexta-feira do mês.'], ['ITM, ATM e OTM', 'Dentro, no e fora do dinheiro. Uma call está ITM quando o strike é menor que o preço da ação.'], ['Valor no tempo', 'Parte do prêmio que derrete a cada dia até o vencimento. Joga a favor de quem vende e contra quem compra.'], ['Volatilidade', 'Quanto o preço costuma oscilar. Volatilidade alta deixa os prêmios mais caros.'], ['MM21 e MM50', 'Médias dos fechamentos dos últimos 21 e 50 pregões. Mostram a direção da tendência.'], ['IFR', 'Índice de Força Relativa, de 0 a 100. Acima de 70 indica alta esticada; abaixo de 30, queda esticada.']];
+function telaOpcoes() {
+  const tabs = [['radar', 'Radar do dia'], ['estrategias', 'Estratégias'], ['simulador', 'Simulador'], ['vencimentos', 'Vencimentos'], ['glossario', 'Glossário']];
+  const corpo = { radar: opRadar, estrategias: opEstr, simulador: opSim, vencimentos: opVenc, glossario: opGloss }[UI.opTab]();
+  const quando = D.radar ? `Leitura ${D.radarFonte === 'ao vivo' ? 'ao vivo' : 'salva'} · ${esc(D.radar.atualizado)}` : 'Carregando dados do mercado…';
+  return `<header class="hdr"><div class="toprow">${logo()}<button class="iconbtn" data-act="atualizar" aria-label="Atualizar dados do mercado">${ic('refresh', 20)}</button></div>
+    <h1 class="big">Opções: entenda o <span class="hl">cenário</span></h1>
+    <span class="small" style="color:var(--mentaClaro)">${quando}</span>
+    <div class="tabs" role="tablist" aria-label="Seções">${tabs.map(([id, l]) => `<button class="pill" role="tab" aria-selected="${UI.opTab === id}" data-act="optab" data-v="${id}">${l}</button>`).join('')}</div></header>
+  <div class="wrap">${corpo}</div>
+  <p class="legal">Conteúdo educacional. O radar é uma leitura técnica automática, feita por um método público e fixo; não é recomendação de investimento nem relatório de análise (Resolução CVM 20). Opções envolvem risco elevado: quem compra pode perder todo o prêmio e quem vende sem cobertura pode perder mais que o capital investido. Confira seu perfil de investidor antes de operar.</p>`;
+}
+function opRadar() {
+  const a = (D.radar && D.radar.ativos) || [];
+  if (!a.length) return '<div class="skeleton"></div><div class="skeleton"></div>';
+  return `<section class="card"><strong style="font-size:13px">Como ler o radar</strong>
+    <div class="grid2 small" style="font-weight:700"><span class="badge b-alta">ALTA · subindo</span><span class="badge b-lateral">LATERAL · de lado</span><span class="badge b-queda">QUEDA · caindo</span><span class="badge b-observar">OBSERVAR · não fazer nada</span></div>
+    <p class="small muted">Gráfico: preço (azul), média de 21 dias (verde) e de 50 dias (tracejada). A faixa colorida mostra o cenário dos últimos 10 pregões.</p></section>
+  ${a.map((x) => `<article class="card" id="r-${x.ticker}">
+    <div class="row" style="align-items:flex-start"><div><strong style="font-size:19px">${x.ticker}</strong><div class="small muted">${esc(x.nome)} · ${esc(x.setor)}</div></div><span class="badge b-${x.cenario}">${NOMECEN[x.cenario]}</span></div>
+    <div style="display:flex;align-items:baseline;gap:10px"><span style="font-size:22px;font-weight:800">${x.preco}</span><span class="${x.varPos ? 'pos' : 'neg'}">${x.var}</span></div>
+    ${grafico(x)}
+    <p style="font-size:14px;line-height:1.5">${esc(x.leitura)}</p>
+    ${x.hist ? `<div class="strip" role="img" aria-label="Cenários dos últimos pregões: ${x.hist.map((h) => h.d + ' ' + h.c).join(', ')}">${x.hist.map((h) => `<span class="s-${h.c}" title="${h.d}: ${h.c}"></span>`).join('')}</div>
+    <span class="small muted">Há ${x.pregoes} ${x.pregoes === 1 ? 'pregão' : 'pregões'} em ${x.cenario}${x.anterior ? ', antes estava em ' + x.anterior : ''}.</span>` : ''}
+    <div class="ind"><span>MM21<strong>${x.mm21}</strong></span><span>MM50<strong>${x.mm50}</strong></span><span>IFR 14<strong>${x.ifr}</strong></span><span>Volat.<strong>${x.vol}</strong></span></div>
+    <p class="small muted">${esc(x.volTxt)}</p>
+    <button class="btn ghost small" style="align-self:flex-start" data-act="estudar" data-v="${x.cenario}">${x.cenario === 'observar' ? 'Por que não fazer nada?' : 'Estudar estratégias de ' + (x.cenario === 'lateral' ? 'lateralização' : x.cenario)}</button>
+    <span class="small" style="color:var(--nota)">Fonte: ${esc(x.fonte)} · faixa de 20 dias ${x.suporte} a ${x.resistencia}</span>
+  </article>`).join('')}`;
+}
+function opEstr() {
+  const [intro, lista] = ESTR[UI.cen];
+  return `<div class="grid4">${['alta', 'lateral', 'queda', 'observar'].map((c) => `<button class="pill" style="padding:0 4px" aria-pressed="${UI.cen === c}" data-act="cen" data-v="${c}">${c[0].toUpperCase() + c.slice(1)}</button>`).join('')}</div>
+  <p style="font-size:14px;line-height:1.5;padding:0 4px">${intro}</p>
+  ${lista.map(([n, pts, o, g, r]) => `<article class="card"><div class="row"><strong style="font-size:17px">${n}</strong>
+    <svg width="120" height="60" viewBox="0 0 120 60" role="img" aria-label="Gráfico de resultado de ${n}" style="background:var(--creme);border-radius:10px;flex:0 0 auto"><line x1="0" y1="30" x2="120" y2="30" stroke="#8A97A8" stroke-dasharray="3 3"/><polyline points="${pts}" fill="none" stroke="#077A5D" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/></svg></div>
+    <p style="font-size:14px;line-height:1.5">${o}</p>
+    <div class="grid2 small"><span style="background:var(--mentaClaro);border-radius:10px;padding:8px;color:var(--floresta)"><strong style="display:block">Ganho máximo</strong>${g}</span><span style="background:#FFE0DA;border-radius:10px;padding:8px;color:#7A1F12"><strong style="display:block">Risco máximo</strong>${r}</span></div></article>`).join('')}
+  <button class="btn ghost small" data-act="optab" data-v="simulador" style="align-self:flex-start">Testar no simulador</button>`;
+}
+function opSim() {
+  const a = (D.radar && D.radar.ativos) || [];
+  const at = a.find((x) => x.ticker === UI.sim.t) || a[0];
+  const S0 = at ? at.precoNum || num(at.preco) : 40;
+  const s = UI.sim;
+  if (s.k == null || s.t0 !== (at && at.ticker)) { s.k = Math.round(S0); s.s = +S0.toFixed(2); s.p = +(S0 * 0.04).toFixed(2); s.t0 = at && at.ticker; }
+  const K = s.k, P = s.p, ST = s.s;
+  const res = (x) => s.tipo === 'call' ? Math.max(x - K, 0) - P : s.tipo === 'put' ? Math.max(K - x, 0) - P : (Math.min(x, K) - S0) + P;
+  const r = res(ST);
+  const lo = S0 * 0.7, hi = S0 * 1.3, W = 320, H = 140;
+  const xs = Array.from({ length: 61 }, (_, i) => lo + (hi - lo) * i / 60), ys = xs.map(res);
+  const ymin = Math.min(...ys, -P * 1.5), ymax = Math.max(...ys, P * 1.5);
+  const X = (x) => (x - lo) / (hi - lo) * W, Y = (y) => H - 8 - (y - ymin) / (ymax - ymin) * (H - 16);
+  const linha = xs.map((x, i) => X(x).toFixed(1) + ',' + Y(ys[i]).toFixed(1)).join(' ');
+  const be = s.tipo === 'call' ? K + P : s.tipo === 'put' ? K - P : S0 - P;
+  const ganhoMax = s.tipo === 'call' ? 'Ilimitado na teoria' : s.tipo === 'put' ? brl(K - P) + ' por opção' : brl(K - S0 + P) + ' por ação';
+  const perdaMax = s.tipo === 'coberta' ? brl(S0 - P) + ' por ação (se a ação zerar)' : brl(P) + ' por opção (o prêmio)';
+  const intr = s.tipo === 'put' ? Math.max(K - S0, 0) : Math.max(S0 - K, 0);
+  const mon = Math.abs(K - S0) / S0 < 0.01 ? 'ATM (no dinheiro)' : ((s.tipo === 'put' ? K > S0 : K < S0) ? 'ITM (dentro do dinheiro)' : 'OTM (fora do dinheiro)');
+  return `<section class="card">
+    <div class="field"><label for="sim-t">Ativo</label><select class="input" id="sim-t" data-sel="sim.t">${a.map((x) => `<option value="${x.ticker}"${at && x.ticker === at.ticker ? ' selected' : ''}>${x.ticker} · ${x.preco}</option>`).join('')}</select></div>
+    <div class="grid3">${[['call', 'Compra de call'], ['put', 'Compra de put'], ['coberta', 'Venda coberta']].map(([v, l]) => `<button class="pill" style="padding:0 4px;white-space:normal;line-height:1.2" aria-pressed="${s.tipo === v}" data-act="simtipo" data-v="${v}">${l}</button>`).join('')}</div>
+    <label class="row small" for="sim-k" style="font-weight:700">Strike <strong>${brl(K)}</strong></label>
+    <input id="sim-k" type="range" min="${Math.floor(S0 * 0.8)}" max="${Math.ceil(S0 * 1.2)}" step="0.5" value="${K}" data-range="sim.k">
+    <label class="row small" for="sim-p" style="font-weight:700">Prêmio por opção <strong>${brl(P)}</strong></label>
+    <input id="sim-p" type="range" min="0.05" max="${(S0 * 0.15).toFixed(2)}" step="0.05" value="${P}" data-range="sim.p">
+    <label class="row small" for="sim-s" style="font-weight:700">Preço da ação no vencimento <strong>${brl(ST)}</strong></label>
+    <input id="sim-s" type="range" min="${lo.toFixed(2)}" max="${hi.toFixed(2)}" step="0.1" value="${ST}" data-range="sim.s">
+    <svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Resultado no vencimento conforme o preço da ação. Empate em ${brl(be)}.">
+      <line x1="0" y1="${Y(0).toFixed(1)}" x2="${W}" y2="${Y(0).toFixed(1)}" stroke="#8A97A8" stroke-dasharray="4 3"/>
+      <line x1="${X(S0).toFixed(1)}" y1="0" x2="${X(S0).toFixed(1)}" y2="${H}" stroke="#CEFBDA" stroke-width="2"/>
+      <polyline points="${linha}" fill="none" stroke="#077A5D" stroke-width="3" stroke-linejoin="round"/>
+      <circle cx="${X(ST).toFixed(1)}" cy="${Y(r).toFixed(1)}" r="6" fill="${r >= 0 ? '#09C797' : '#B3261E'}"/></svg>
+    <div class="card ${r >= 0 ? 'mint' : 'warn'}" style="padding:12px;gap:4px"><strong>Resultado: ${r >= 0 ? '+' : '−'} ${brl(Math.abs(r))} ${s.tipo === 'coberta' ? 'por ação' : 'por opção'}</strong>
+      <span class="small">No lote de 100: ${r >= 0 ? '+' : '−'} ${brl(Math.abs(r * 100))}</span></div>
+    <div class="grid2 small"><span><strong style="display:block">Empate</strong>${brl(be)}</span><span><strong style="display:block">Situação hoje</strong>${s.tipo === 'coberta' ? 'Call vendida ' + mon : mon}</span>
+      <span><strong style="display:block">Ganho máximo</strong>${ganhoMax}</span><span><strong style="display:block">Perda máxima</strong>${perdaMax}</span></div>
+    ${s.tipo !== 'coberta' && P < intr ? `<p class="small" style="color:#7A1F12">Atenção: prêmio abaixo do valor intrínseco (${brl(intr)}). No mercado real isso quase nunca acontece; ajuste o prêmio.</p>` : ''}
+  </section>
+  <p class="small muted" style="padding:0 4px">Valores do simulador são hipotéticos, para entender a mecânica. Prêmios reais dependem do mercado, do prazo e da volatilidade.</p>`;
+}
+const FERIADOS = new Set(['2026-01-01', '2026-02-16', '2026-02-17', '2026-04-03', '2026-04-21', '2026-05-01', '2026-06-04', '2026-09-07', '2026-10-12', '2026-11-02', '2026-11-20', '2026-12-24', '2026-12-25', '2026-12-31', '2027-01-01', '2027-02-08', '2027-02-09', '2027-03-26', '2027-04-21', '2027-05-27', '2027-09-07', '2027-10-12', '2027-11-02', '2027-11-15', '2027-12-24', '2027-12-31']);
+const iso = (d) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+const util = (d) => d.getDay() !== 0 && d.getDay() !== 6 && !FERIADOS.has(iso(d));
+function opVenc() {
+  const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+  const lista = []; let y = hoje.getFullYear(), m = hoje.getMonth();
+  while (lista.length < 6) {
+    const d = new Date(y, m, 1); let sext = 0;
+    while (true) { if (d.getDay() === 5 && ++sext === 3) break; d.setDate(d.getDate() + 1); }
+    const orig = new Date(d);
+    while (!util(d)) d.setDate(d.getDate() - 1);
+    if (d >= hoje) {
+      let preg = 0; const c = new Date(hoje); c.setDate(c.getDate() + 1);
+      while (c <= d) { if (util(c)) preg++; c.setDate(c.getDate() + 1); }
+      lista.push({ d, antec: iso(d) !== iso(orig), preg, dias: Math.round((d - hoje) / 86400000), call: 'ABCDEFGHIJKL'[m], put: 'MNOPQRSTUVWX'[m] });
+    }
+    m++; if (m > 11) { m = 0; y++; }
+  }
+  return `${lista.map((v, i) => `<article class="card${i === 0 ? ' navy' : ''}" style="gap:6px">
+    <div class="row"><strong style="font-size:17px;text-transform:capitalize">${v.d.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' })}</strong><span class="badge ${i === 0 ? 'b-alta' : 'b-lateral'}">${v.preg} pregões</span></div>
+    <span class="small${i === 0 ? '' : ' muted'}">${v.dias} dias corridos · série de call <strong>${v.call}</strong>, de put <strong>${v.put}</strong> (ex.: PETR${v.call})${v.antec ? ' · antecipado por feriado' : ''}</span></article>`).join('')}
+  <section class="card mint"><span class="eyebrow">Por que o prazo importa</span><p class="small">Quanto menos pregões faltam, mais rápido o valor no tempo do prêmio derrete. Isso pesa contra quem compra opção e a favor de quem vende.</p></section>`;
+}
+function opGloss() { return GLOSS.map(([t, d]) => `<div class="card" style="gap:4px"><strong>${t}</strong><span class="muted" style="font-size:14px">${d}</span></div>`).join(''); }
+
+/* ============ Eventos ============ */
+document.addEventListener('submit', (e) => {
+  const f = e.target.dataset.form; if (!f) return; e.preventDefault();
+  if (f === 'entrar') {
+    const nome = e.target.nome.value.trim().split(/\s+/)[0];
+    if (!nome) return;
+    conta = novaConta(nome.charAt(0).toUpperCase() + nome.slice(1)); salvar(); location.hash = '#/inicio'; render(); toast('Conta criada. Boas-vindas à 9Pilla!');
+  }
+  if (f === 'pix') {
+    const v = +num(UI.pix.valor).toFixed(2), chave = UI.pix.chave.trim();
+    if (!chave || v <= 0 || v > conta.saldo) return;
+    conta.saldo = +(conta.saldo - v).toFixed(2); lancar('Pix enviado para ' + chave, -v);
+    UI.pix = { chave: '', valor: '' }; render(); toast('Pix de ' + brl(v) + ' enviado (demonstração)');
+  }
+});
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const a = b.dataset.act, v = b.dataset.v;
+  const acts = {
+    olho: () => { conta.mostrar = !conta.mostrar; salvar(); },
+    pixrapido: () => { UI.pix.valor = brl(num(UI.pix.valor) + +v).replace('R$', '').trim(); },
+    pixreceber: () => { conta.saldo = +(conta.saldo + 1).toFixed(2); lancar('Pix recebido', 1); toast('Você recebeu R$ 1,00 (demonstração)'); },
+    grapido: () => { UI.guardar.valor = brl(num(UI.guardar.valor) + +v).replace('R$', '').trim(); },
+    guardar: () => { const x = +num(UI.guardar.valor).toFixed(2); if (x <= 0 || x > conta.saldo) return; renderCaixinha(); conta.saldo = +(conta.saldo - x).toFixed(2); conta.caixinha = +(conta.caixinha + x).toFixed(2); if (conta.caixinha === x) conta.caixinhaTs = Date.now(); lancar('Guardado na caixinha', -x); UI.guardar.valor = ''; toast(brl(x) + ' guardados. Agora é deixar render!'); },
+    resgatar: () => { const x = +num(UI.guardar.valor).toFixed(2); if (x <= 0 || x > conta.caixinha) return; conta.caixinha = +(conta.caixinha - x).toFixed(2); conta.saldo = +(conta.saldo + x).toFixed(2); lancar('Resgate da caixinha', x); UI.guardar.valor = ''; toast(brl(x) + ' de volta na conta'); },
+    rfprazo: () => { UI.rf.meses = +v; },
+    metaobj: () => { UI.meta = { obj: b.dataset.id, meta: +b.dataset.m, aporte: +b.dataset.a }; },
+    perg: () => { conta.perfil = Object.assign({}, conta.perfil, { [b.dataset.id]: +v }); salvar(); },
+    reset: () => { if (!UI.resetOk) { UI.resetOk = true; toast('Toque de novo em Recomeçar para zerar a demonstração'); setTimeout(() => { UI.resetOk = false; }, 5000); return; } UI.resetOk = false; conta = novaConta(conta.nome); salvar(); toast('Conta recomeçada com R$ 1,00'); },
+    optab: () => { UI.opTab = v; window.scrollTo(0, 0); },
+    cen: () => { UI.cen = v; },
+    estudar: () => { UI.cen = v; UI.opTab = 'estrategias'; window.scrollTo(0, 0); },
+    simtipo: () => { UI.sim.tipo = v; },
+    atualizar: () => { carregar(true); toast('Buscando dados do mercado…'); },
+    divsel: () => { const s = UI.div.sel; UI.div.sel = s.includes(v) ? s.filter((x) => x !== v) : s.concat(v); },
+    divabre: () => { UI.div.aberto = UI.div.aberto === v ? null : v; },
+    divanos: () => { UI.div.anos = +v; },
+    vertick: () => { UI.opTab = 'radar'; }
+  };
+  if (acts[a]) { acts[a](); render(); }
+});
+// campos de texto: atualiza só os botões, sem redesenhar a tela enquanto a pessoa digita
+function atualizaBotoes() {
+  const pv = num(UI.pix.valor), b = $('#pix-btn');
+  if (b) { b.disabled = !(pv > 0 && pv <= conta.saldo && UI.pix.chave.trim()); b.textContent = 'Enviar Pix de ' + brl(pv); $('#pix-aviso').classList.toggle('hide', !(pv > conta.saldo)); }
+  const gv = num(UI.guardar.valor), g1 = $('#g-guardar'), g2 = $('#g-resgatar');
+  if (g1) { g1.disabled = !(gv > 0 && gv <= conta.saldo); g2.disabled = !(gv > 0 && gv <= conta.caixinha); }
+}
+document.addEventListener('input', (e) => {
+  const el = e.target;
+  if (el.dataset.bind) { const [g, k] = el.dataset.bind.split('.'); UI[g][k] = el.value; atualizaBotoes(); }
+  // controles deslizantes: durante o arraste atualiza só o número; ao soltar, redesenha
+  if (el.dataset.range) {
+    const [g, k] = el.dataset.range.split('.'); UI[g][k] = +el.value;
+    const lab = document.querySelector('label[for="' + el.id + '"] strong');
+    if (lab) lab.textContent = brl(+el.value, /meta|rf|div/.test(g) ? 0 : 2);
+  }
+});
+document.addEventListener('change', (e) => {
+  const el = e.target;
+  if (el.dataset.range) { const id = el.id; render(); const n = document.getElementById(id); if (n) n.focus({ preventScroll: true }); }
+  if (el.dataset.sel) { const [g, k] = el.dataset.sel.split('.'); UI[g][k] = el.value; UI.sim.k = null; render(); }
+});
+
+/* ============ Início do app ============ */
+render();
+carregar(false);
+setInterval(() => { if (document.visibilityState === 'visible') carregar(false); }, 15 * 60 * 1000);
+if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+</script>
+</body>
+</html>
