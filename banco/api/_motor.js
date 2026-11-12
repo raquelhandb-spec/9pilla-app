@@ -184,4 +184,26 @@ async function dividendos() {
   return { atualizado: agora.slice(8, 10) + '/' + agora.slice(5, 7) + '/' + agora.slice(0, 4), ativos: res };
 }
 
-module.exports = { radar, taxas, dividendos };
+// Morning Call: Brasil, exterior, commodities, cripto e ADRs (Yahoo Finance)
+const MERCADOS = [
+  ['^BVSP', 'Ibovespa', 'brasil', 'pts'], ['BRL=X', 'Dólar', 'brasil', 'R$'], ['EURBRL=X', 'Euro', 'brasil', 'R$'],
+  ['^GSPC', 'S&P 500 (EUA)', 'exterior', 'pts'], ['^IXIC', 'Nasdaq (EUA)', 'exterior', 'pts'], ['^DJI', 'Dow Jones (EUA)', 'exterior', 'pts'], ['^VIX', 'VIX (medo nos EUA)', 'exterior', 'pts'],
+  ['BZ=F', 'Petróleo Brent', 'commodities', 'US$'], ['GC=F', 'Ouro', 'commodities', 'US$'], ['BTC-USD', 'Bitcoin', 'commodities', 'US$'],
+  ['PBR', 'Petrobras em NY (PBR)', 'adr', 'US$'], ['VALE', 'Vale em NY (VALE)', 'adr', 'US$'], ['EWZ', 'Brasil em NY (EWZ)', 'adr', 'US$']
+];
+async function cotacao([s, nome, grupo, un]) {
+  const d = await getJSON(`https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(s)}?range=5d&interval=1d`);
+  const r = d.chart.result[0];
+  const closes = r.indicators.quote[0].close.filter((x) => x != null);
+  const preco = r.meta.regularMarketPrice;
+  const ant = closes.length >= 2 ? (Math.abs(closes[closes.length - 1] - preco) / preco < 0.0001 ? closes[closes.length - 2] : closes[closes.length - 1]) : r.meta.chartPreviousClose;
+  return { s, nome, grupo, un, preco: +preco.toFixed(4), var: +((preco / ant - 1) * 100).toFixed(2), hora: new Date((r.meta.regularMarketTime - 3 * 3600) * 1000).toISOString().slice(11, 16) };
+}
+async function morning() {
+  const res = await Promise.allSettled(MERCADOS.map(cotacao));
+  const itens = res.filter((x) => x.status === 'fulfilled').map((x) => x.value);
+  const agora = new Date(Date.now() - 3 * 3600 * 1000).toISOString();
+  return { atualizado: agora.slice(8, 10) + '/' + agora.slice(5, 7) + '/' + agora.slice(0, 4) + ' às ' + agora.slice(11, 16), itens };
+}
+
+module.exports = { radar, taxas, dividendos, morning };

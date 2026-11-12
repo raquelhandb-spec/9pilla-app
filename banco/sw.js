@@ -1,5 +1,5 @@
 // 9Pilla: funciona offline com a última versão do app; dados de mercado sempre tentam a rede primeiro
-const CACHE = '9pilla-v1';
+const CACHE = '9pilla-v2';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', (e) => {
