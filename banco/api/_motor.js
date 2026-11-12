@@ -244,4 +244,38 @@ async function global() {
   };
 }
 
-module.exports = { radar, taxas, dividendos, morning, global };
+// FIIs acompanhados (rendimentos dos últimos 12 meses, Yahoo Finance)
+const FIIS = [['HGLG11', 'CSHG Logística', 'Galpões logísticos'], ['KNRI11', 'Kinea Renda Imobiliária', 'Escritórios e galpões'], ['XPML11', 'XP Malls', 'Shopping centers'],
+  ['VISC11', 'Vinci Shopping Centers', 'Shopping centers'], ['KNCR11', 'Kinea Rendimentos', 'Papel (CRI pós-fixado)'], ['MXRF11', 'Maxi Renda', 'Papel e desenvolvimento']];
+async function fiis() {
+  const res = [];
+  for (const [t, nome, tipo] of FIIS) {
+    try { const p = await proventos([t, nome, tipo]); res.push(Object.assign(p, { dyMes: +(p.dy / 12).toFixed(2) })); } catch (e) { /* segue */ }
+  }
+  return res;
+}
+
+// R$ 1.000 por mês nos últimos 5 anos: S&P 500 em reais (IVVB11), Ibovespa (BOVA11) e CDI
+async function comparativo() {
+  const mens = async (t) => {
+    const d = await getJSON(`https://query2.finance.yahoo.com/v8/finance/chart/${t}.SA?range=5y&interval=1mo`);
+    const r = d.chart.result[0];
+    return r.timestamp.map((ts, i) => [dia(ts).slice(0, 7), r.indicators.quote[0].close[i]]).filter((x) => x[1]);
+  };
+  const [ivv, bova] = await Promise.all([mens('IVVB11'), mens('BOVA11')]);
+  const ini = new Date(Date.now() - 5 * 365 * 86400000);
+  const d0 = String(ini.getDate()).padStart(2, '0') + '/' + String(ini.getMonth() + 1).padStart(2, '0') + '/' + ini.getFullYear();
+  const cdiRaw = await getJSON(`https://api.bcb.gov.br/dados/serie/bcdata.sgs.4391/dados?formato=json&dataInicial=${d0}`);
+  const cdi = {}; cdiRaw.forEach((x) => { const [, m, a] = x.data.split('/'); cdi[a + '-' + m] = parseFloat(String(x.valor).replace(',', '.')) / 100; });
+  const meses = ivv.map((x) => x[0]).filter((m) => bova.find((b) => b[0] === m));
+  const preco = (arr, m) => (arr.find((x) => x[0] === m) || [])[1];
+  let qI = 0, qB = 0, vC = 0, ap = 0; const pts = [];
+  meses.forEach((m, i) => {
+    if (i > 0) vC *= 1 + (cdi[m] != null ? cdi[m] : 0);
+    qI += 1000 / preco(ivv, m); qB += 1000 / preco(bova, m); vC += 1000; ap += 1000;
+    pts.push({ m, ap, ivvb: Math.round(qI * preco(ivv, m)), bova: Math.round(qB * preco(bova, m)), cdi: Math.round(vC) });
+  });
+  return { de: meses[0], ate: meses[meses.length - 1], pts };
+}
+
+module.exports = { radar, taxas, dividendos, morning, global, fiis, comparativo };

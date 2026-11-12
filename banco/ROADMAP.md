@@ -12,13 +12,10 @@ App: https://9pilla-banco.vercel.app · código: pasta `banco/` deste repositór
 - Uma melhoria por dia, pequena e completa. Marcar [x] aqui com a data.
 
 ## Fila (fazer na ordem)
-- [ ] Mundo: comparar "investir R$ 1.000 por mês" no IVVB11 contra o CDI nos últimos 5 anos, com gráfico
 - [ ] Trilha "Entenda opções em 7 dias": um cartão educativo por dia, com quiz curto
 - [ ] Explicação do dia no radar: frase simples sobre o que mudou desde o pregão anterior
 - [ ] Glossário com busca
-- [ ] Agenda da semana no Morning Call: Copom, IPCA e vencimento de opções (datas fixas conhecidas), sem depender de API paga
 - [ ] Comparativo de bancos: ITUB4 x BBDC4 x BBAS3 com rendimento em dividendos e preço, em tom educativo
-- [ ] FIIs no app: 5 fundos conhecidos com rendimento dos últimos 12 meses (Yahoo Finance), ligados à tela Dinheiro que paga todo mês
 - [ ] Jogo da família: escolher o nome da família e o nome de cada integrante
 - [ ] Extrato com filtro por tipo (Pix, caixinha, rendimento)
 
@@ -28,3 +25,7 @@ App: https://9pilla-banco.vercel.app · código: pasta `banco/` deste repositór
 - [x] 12/11/2026 · Suporte à chave da BRAPI pela variável BRAPI_TOKEN
 - [x] 12/11/2026 · Botão Atualizar respeita o cache de 15 minutos (consumo fixo da BRAPI)
 - [x] 12/11/2026 · Tela Mundo: bolsas abertas agora (12 índices), moedas contra o real, efeito do dólar, conversor com IOF e spread, três caminhos para investir fora (ETFs, BDRs, conta no exterior) com impostos, ETFs globais e BDRs; Mundo entrou no menu no lugar do Pix (Pix segue no Início)
+- [x] 12/11/2026 · R$ 1.000 por mês em 5 anos: IVVB11 x CDI x BOVA11 com gráfico (tela Mundo, api/extras)
+- [x] 12/11/2026 · Agenda do mercado no Morning Call: Copom (datas do BC até dez/2027), vencimentos de opções e feriados da B3
+- [x] 12/11/2026 · 6 FIIs reais com rendimento de 12 meses na tela Dinheiro que paga todo mês, com a média real como opção
+- [x] 12/11/2026 · Tela Regras e transparência (BC, CVM 20 e 30, LGPD, CDC, impostos, fontes) e botão para apagar os dados do aparelho
