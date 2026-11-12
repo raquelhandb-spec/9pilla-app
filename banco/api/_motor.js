@@ -208,4 +208,40 @@ async function morning() {
   return { atualizado: agora.slice(8, 10) + '/' + agora.slice(5, 7) + '/' + agora.slice(0, 4) + ' às ' + agora.slice(11, 16), itens };
 }
 
-module.exports = { radar, taxas, dividendos, morning };
+// Mundo: bolsas, moedas contra o real, ETFs globais e BDRs na B3 (Yahoo Finance)
+const BOLSAS = [
+  ['^BVSP', 'Ibovespa', 'Brasil', 'São Paulo', 'BRL'], ['^GSPC', 'S&P 500', 'Estados Unidos', 'Nova York', 'USD'], ['^IXIC', 'Nasdaq', 'Estados Unidos', 'Nova York', 'USD'],
+  ['^MXX', 'IPC', 'México', 'Cidade do México', 'MXN'], ['^FTSE', 'FTSE 100', 'Reino Unido', 'Londres', 'GBP'], ['^GDAXI', 'DAX', 'Alemanha', 'Frankfurt', 'EUR'],
+  ['^FCHI', 'CAC 40', 'França', 'Paris', 'EUR'], ['^STOXX50E', 'Euro Stoxx 50', 'Zona do euro', 'Europa', 'EUR'], ['^N225', 'Nikkei 225', 'Japão', 'Tóquio', 'JPY'],
+  ['^HSI', 'Hang Seng', 'Hong Kong', 'Hong Kong', 'HKD'], ['000001.SS', 'Xangai', 'China', 'Xangai', 'CNY'], ['^NSEI', 'Nifty 50', 'Índia', 'Mumbai', 'INR']
+];
+const MOEDAS = [['BRL=X', 'Dólar americano', 'USD', 1], ['EURBRL=X', 'Euro', 'EUR', 1], ['GBPBRL=X', 'Libra esterlina', 'GBP', 1], ['JPYBRL=X', 'Iene japonês (100)', 'JPY', 100], ['CNYBRL=X', 'Yuan chinês', 'CNY', 1], ['ARSBRL=X', 'Peso argentino (100)', 'ARS', 100]];
+const ETFS = [['IVVB11', 'S&P 500 em reais', 'As 500 maiores empresas dos EUA'], ['NASD11', 'Nasdaq-100', 'Tecnologia e inovação dos EUA'], ['WRLD11', 'Mundo desenvolvido', 'EUA, Europa, Japão e outros'], ['ACWI11', 'Mundo todo', 'Desenvolvidos e emergentes'], ['XINA11', 'China', 'Grandes empresas chinesas'], ['GOLD11', 'Ouro', 'Preço do ouro em reais'], ['HASH11', 'Cripto', 'Cesta de criptoativos']];
+const BDRS = [['AAPL34', 'Apple'], ['MSFT34', 'Microsoft'], ['NVDC34', 'Nvidia'], ['AMZO34', 'Amazon'], ['GOGL34', 'Alphabet (Google)'], ['M1TA34', 'Meta'], ['TSLA34', 'Tesla'], ['BERK34', 'Berkshire Hathaway']];
+async function serie(s) {
+  const d = await getJSON(`https://query2.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(s)}?range=1y&interval=1d`);
+  const r = d.chart.result[0], m = r.meta;
+  const c = r.indicators.quote[0].close.filter((x) => x != null);
+  const preco = m.regularMarketPrice;
+  const ant = c.length >= 2 ? (Math.abs(c[c.length - 1] - preco) / preco < 0.0001 ? c[c.length - 2] : c[c.length - 1]) : preco;
+  const p = m.currentTradingPeriod && m.currentTradingPeriod.regular;
+  return { preco: +preco.toFixed(4), dia: +((preco / ant - 1) * 100).toFixed(2), ano: c.length > 200 ? +((preco / c[0] - 1) * 100).toFixed(1) : null,
+    tz: m.exchangeTimezoneName, abre: p ? p.start : null, fecha: p ? p.end : null, quando: m.regularMarketTime };
+}
+async function global() {
+  const tudo = [...BOLSAS.map((b) => b[0]), ...MOEDAS.map((x) => x[0]), ...ETFS.map((e) => e[0] + '.SA'), ...BDRS.map((b) => b[0] + '.SA')];
+  const res = await Promise.allSettled(tudo.map(serie));
+  const v = {}; tudo.forEach((s, i) => { if (res[i].status === 'fulfilled') v[s] = res[i].value; });
+  const fx = {}; MOEDAS.forEach(([s, , cod]) => { if (v[s]) fx[cod] = v[s].ano; }); fx.BRL = 0;
+  const emReais = (ano, moeda) => ano == null || fx[moeda] == null ? null : +(((1 + ano / 100) * (1 + fx[moeda] / 100) - 1) * 100).toFixed(1);
+  const agora = new Date(Date.now() - 3 * 3600 * 1000).toISOString();
+  return {
+    atualizado: agora.slice(8, 10) + '/' + agora.slice(5, 7) + '/' + agora.slice(0, 4) + ' às ' + agora.slice(11, 16),
+    bolsas: BOLSAS.filter((b) => v[b[0]]).map(([s, nome, pais, cidade, moeda]) => Object.assign({ s, nome, pais, cidade, moeda, anoReais: emReais(v[s].ano, moeda) }, v[s])),
+    moedas: MOEDAS.filter((x) => v[x[0]]).map(([s, nome, cod, mult]) => ({ s, nome, cod, mult, preco: +(v[s].preco * mult).toFixed(4), dia: v[s].dia, ano: v[s].ano })),
+    etfs: ETFS.filter((e) => v[e[0] + '.SA']).map(([t, nome, desc]) => ({ t, nome, desc, preco: v[t + '.SA'].preco, dia: v[t + '.SA'].dia, ano: v[t + '.SA'].ano })),
+    bdrs: BDRS.filter((b) => v[b[0] + '.SA']).map(([t, nome]) => ({ t, nome, preco: v[t + '.SA'].preco, dia: v[t + '.SA'].dia, ano: v[t + '.SA'].ano }))
+  };
+}
+
+module.exports = { radar, taxas, dividendos, morning, global };

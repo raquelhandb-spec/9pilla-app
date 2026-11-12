@@ -12,6 +12,7 @@ App: https://9pilla-banco.vercel.app · código: pasta `banco/` deste repositór
 - Uma melhoria por dia, pequena e completa. Marcar [x] aqui com a data.
 
 ## Fila (fazer na ordem)
+- [ ] Mundo: comparar "investir R$ 1.000 por mês" no IVVB11 contra o CDI nos últimos 5 anos, com gráfico
 - [ ] Trilha "Entenda opções em 7 dias": um cartão educativo por dia, com quiz curto
 - [ ] Explicação do dia no radar: frase simples sobre o que mudou desde o pregão anterior
 - [ ] Glossário com busca
@@ -25,3 +26,5 @@ App: https://9pilla-banco.vercel.app · código: pasta `banco/` deste repositór
 - [x] 12/11/2026 · App publicado: conta de demonstração com R$ 1,00, Pix, caixinha, renda fixa, metas, perfil, ações, opções (radar, estratégias, simulador, vencimentos, glossário), dividendos
 - [x] 12/11/2026 · Morning Call ao vivo, Dinheiro que paga todo mês e Jogo da família
 - [x] 12/11/2026 · Suporte à chave da BRAPI pela variável BRAPI_TOKEN
+- [x] 12/11/2026 · Botão Atualizar respeita o cache de 15 minutos (consumo fixo da BRAPI)
+- [x] 12/11/2026 · Tela Mundo: bolsas abertas agora (12 índices), moedas contra o real, efeito do dólar, conversor com IOF e spread, três caminhos para investir fora (ETFs, BDRs, conta no exterior) com impostos, ETFs globais e BDRs; Mundo entrou no menu no lugar do Pix (Pix segue no Início)
