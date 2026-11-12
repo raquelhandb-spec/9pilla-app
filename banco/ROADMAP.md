@@ -6,10 +6,12 @@ App: https://9pilla-banco.vercel.app · código: pasta `banco/` deste repositór
 - O app é EDUCATIVO e está em modo demonstração. Nunca escrever "compre", "venda", "entre agora" nem preço-alvo. Manter o aviso de que não é recomendação (Resolução CVM 20) e o aviso de modo demonstração.
 - Nunca usar a palavra "aposta" e variações. Nunca usar travessão em texto corrido. Preferir "entender" a "aprender".
 - PETR4, VALE3 e bancos aparecem como ativos acompanhados e exemplos educativos, nunca como carteira obrigatória (Resolução CVM 30).
-- Cores da marca: menta #09C797, marinho #122B4A, verde logo #2FCD7F, creme #EFEFE4, floresta #0B2A1B, lima #7DF14E, menta claro #CEFBDA.
+- Cores da marca: menta do logo #09C797 (PANTONE 3395 C) é a cor principal do app (cabeçalhos, botões, navegação); floresta #0B2A1B para texto sobre menta; marinho #122B4A, verde logo #2FCD7F, creme #EFEFE4, lima #7DF14E, menta claro #CEFBDA.
 - Chaves de API só como variável secreta na Vercel (ex.: BRAPI_TOKEN), nunca no código.
 - O app nunca pode quebrar: testar no tamanho de celular (390 px) antes de publicar, sem erros no console e sem rolagem lateral.
 - Uma melhoria por dia, pequena e completa. Marcar [x] aqui com a data.
+
+- [x] 12/11/2026 · Identidade visual: app todo na menta do logo (PANTONE 3395 C), botões e navegação novos
 
 ## Fila (fazer na ordem)
 - [ ] Trilha "Entenda opções em 7 dias": um cartão educativo por dia, com quiz curto

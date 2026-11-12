@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>9Pilla</title>
 <meta name="description" content="9Pilla: seu banco de investimentos educativo. Entenda o mercado e faça seu dinheiro render.">
-<meta name="theme-color" content="#0B2A1B">
+<meta name="theme-color" content="#09C797">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -111,6 +111,30 @@ nav.bottom a[aria-current=page]{color:var(--verdeTexto);font-weight:800}
 @keyframes sk{to{background-position:-200% 0}}
 .hide{display:none!important}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* Identidade 9Pilla Bank: menta do logo (#09C797, PANTONE 3395 C) como cor principal */
+.hdr,.hdr.navy,.hdr.menta{background:var(--menta);color:var(--floresta)}
+.hdr .logo .n,.hdr .logo .p{color:#fff}
+.hdr .logo .p{font-weight:800;letter-spacing:-.8px}
+.hdr .iconbtn{border-color:rgba(11,42,27,.28);color:var(--floresta)}
+.hdr a.iconbtn[href="#/perfil"]{background:var(--floresta)!important;color:var(--menta)!important}
+.hdr h1.big{color:var(--floresta)}
+.hdr .hl{background:var(--floresta);color:var(--lima);padding:0 8px;border-radius:8px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.hdr .sub,.hdr .muted{color:var(--floresta)}
+.hdr .pill{background:rgba(255,255,255,.35);border-color:transparent;color:var(--floresta)}
+.hdr .pill[aria-selected=true],.hdr .pill[aria-pressed=true]{background:var(--floresta);color:#fff;border-color:var(--floresta)}
+.card.navy{background:var(--floresta)}
+.btn{background:var(--menta);color:var(--floresta)}
+.btn.ghost{background:transparent;border-color:var(--floresta);color:var(--floresta)}
+.card.navy .btn,.card.dark .btn{background:var(--menta);color:var(--floresta)}
+.pill[aria-pressed=true],.pill[aria-selected=true],.opt[aria-pressed=true]{background:var(--floresta);border-color:var(--floresta);color:#fff}
+.qa{color:var(--floresta)}
+.qa .ic{box-shadow:0 1px 0 rgba(11,42,27,.06)}
+nav.bottom a[aria-current=page]{color:var(--floresta)}
+nav.bottom a[aria-current=page] svg{background:var(--mentaClaro);border-radius:12px;padding:3px 14px;box-sizing:content-box;color:var(--verdeTexto)}
+.card{box-shadow:0 1px 2px rgba(11,42,27,.05)}
+.hdr h1.big{line-height:1.18}
+.badge{white-space:normal}
 </style>
 </head>
 <body>
