@@ -195,10 +195,10 @@ async function carregar(forcar) {
   if (D.carregando) return; D.carregando = true;
   try {
     const [r, t, dv, mc] = await Promise.allSettled([
-      fetch('./api/radar' + (forcar ? '?t=' + Date.now() : '')).then((x) => x.ok ? x.json() : Promise.reject(x.status)),
+      fetch('./api/radar').then((x) => x.ok ? x.json() : Promise.reject(x.status)),
       fetch('./api/taxas').then((x) => x.ok ? x.json() : Promise.reject(x.status)),
       fetch('./api/dividendos').then((x) => x.ok ? x.json() : Promise.reject(x.status)),
-      fetch('./api/morning' + (forcar ? '?t=' + Date.now() : '')).then((x) => x.ok ? x.json() : Promise.reject(x.status))
+      fetch('./api/morning').then((x) => x.ok ? x.json() : Promise.reject(x.status))
     ]);
     if (mc.status === 'fulfilled' && mc.value.itens && mc.value.itens.length) { D.mc = mc.value; D.mcFonte = 'ao vivo'; }
     if (r.status === 'fulfilled' && r.value.ativos && r.value.ativos.length) { D.radar = r.value; D.radarFonte = 'ao vivo'; }
