@@ -735,10 +735,10 @@ function cardAgenda() {
 
 /* ============ Regras e transparência ============ */
 
-// WhatsApp da Turma 9Pilla para A Bolsa é Delas: número com DDI e DDD, só dígitos (ex.: 5511999999999)
-const WHATS_DELAS = '';
+// Contato oficial: grupo da Turma 9Pilla (nunca o WhatsApp pessoal)
+const GRUPO_9PILLA = 'https://chat.whatsapp.com/Ly0K34qNxdT75boi9g4eOF';
 const MSG_DELAS = 'Vim através do link A BOLSA É DELAS, como faço para participar desse EVENTO?';
-function linkDelas() { return 'https://wa.me/' + WHATS_DELAS + '?text=' + encodeURIComponent(MSG_DELAS); }
+function linkDelas() { return GRUPO_9PILLA; }
 function telaDelas() {
   const passo = (n, t, d) => `<div class="delas-passo"><span class="delas-num">${n}</span><div><strong>${t}</strong><p class="small" style="margin:4px 0 0;line-height:1.55">${d}</p></div></div>`;
   return `<div class="delas"><header class="hdr"><div class="toprow"><a class="iconbtn" href="#/inicio" aria-label="Voltar">${ic('back', 20)}</a>${logo()}</div>
@@ -756,8 +756,8 @@ function telaDelas() {
     </section>
     <section class="card" style="background:var(--nude2)"><span class="eyebrow">Evento A Bolsa é Delas</span>
       <h2 style="margin:0">Quer participar?</h2>
-      <p class="small" style="line-height:1.6">Toque no botão, a mensagem já vai pronta para a Turma 9Pilla no WhatsApp. É só enviar.</p>
-      <a class="wa" href="${linkDelas()}" target="_blank" rel="noopener">Quero participar pelo WhatsApp</a>
+      <p class="small" style="line-height:1.6">Toque no botão: a mensagem é copiada e o grupo da Turma 9Pilla abre no WhatsApp. É só colar e enviar.</p>
+      <a class="wa" href="${linkDelas()}" target="_blank" rel="noopener" onclick="try{navigator.clipboard.writeText(MSG_DELAS).catch(function(){})}catch(e){}">Quero participar pelo WhatsApp</a>
       <p class="small muted" style="margin:0">Mensagem: "${esc(MSG_DELAS)}"</p>
     </section>
     <section class="card"><span class="eyebrow">Comece agora</span>
