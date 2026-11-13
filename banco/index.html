@@ -135,6 +135,27 @@ nav.bottom a[aria-current=page] svg{background:var(--mentaClaro);border-radius:1
 .card{box-shadow:0 1px 2px rgba(11,42,27,.05)}
 .hdr h1.big{line-height:1.18}
 .badge{white-space:normal}
+
+/* A Bolsa é Delas: nude claro */
+.delas{background:#F3E5DB;min-height:100vh;padding-bottom:90px;--nude:#F3E5DB;--nude2:#E9D0C1;--cacau:#4E3128;--terracota:#B5705C;--rosado:#F8EEE8}
+.delas .hdr{background:var(--nude2);color:var(--cacau)}
+.delas .hdr h1.big{color:var(--cacau)}
+.delas .hdr .hl{background:var(--cacau);color:var(--nude)}
+.delas .hdr .sub{color:var(--cacau)}
+.delas .hdr .iconbtn{color:var(--cacau);border-color:rgba(78,49,40,.3)}
+.delas .hdr .logo .n,.delas .hdr .logo .p{color:var(--cacau)}
+.delas .wrap{background:transparent}
+.delas .card{background:var(--rosado);border:1px solid var(--nude2);color:var(--cacau)}
+.delas .card .muted,.delas .card .small{color:#6E4D41}
+.delas .eyebrow{color:var(--terracota)}
+.delas .btn{background:var(--cacau);color:var(--nude)}
+.delas .btn.ghost{background:transparent;color:var(--cacau);border-color:var(--cacau)}
+.delas-tag{display:inline-block;background:var(--cacau);color:var(--nude);font-weight:800;font-size:12px;letter-spacing:1.5px;padding:6px 12px;border-radius:999px;text-transform:uppercase}
+.delas-num{font-family:'Anton',sans-serif;font-size:28px;color:var(--terracota);line-height:1}
+.delas-passo{display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:start}
+.card-delas{background:#F3E5DB;color:#4E3128;border:1px solid #E9D0C1;text-decoration:none}
+.card-delas .eyebrow{color:#B5705C}
+.wa{display:flex;align-items:center;justify-content:center;gap:10px;min-height:56px;border-radius:999px;background:#1F8A55;color:#fff;font-weight:800;font-size:16px;text-decoration:none}
 </style>
 </head>
 <body>
@@ -245,14 +266,14 @@ const UI = { opTab: 'radar', cen: 'alta', rf: { valor: 5000, meses: 24 }, meta: 
   renda: { valor: 2000, dy: 0.8, aporte: 500, inicial: 0 },
   mundo: { valor: 1000, spread: 1, via: 'invest' } };
 const NAV = [['inicio', 'Início', 'home'], ['investir', 'Investir', 'trend'], ['mundo', 'Mundo', 'globe'], ['opcoes', 'Opções', 'radar'], ['perfil', 'Perfil', 'user']];
-const SECAO = { 'renda-fixa': 'investir', metas: 'investir', acoes: 'investir', dividendos: 'investir', renda: 'investir', jogo: 'investir', guardar: 'inicio', extrato: 'inicio', morning: 'inicio', pix: 'inicio', regras: 'perfil' };
+const SECAO = { 'renda-fixa': 'investir', metas: 'investir', acoes: 'investir', dividendos: 'investir', renda: 'investir', jogo: 'investir', guardar: 'inicio', extrato: 'inicio', morning: 'inicio', pix: 'inicio', regras: 'perfil', delas: 'inicio' };
 function rota() { return (location.hash.replace(/^#\/?/, '') || 'inicio').split('?')[0]; }
 function render() {
   const r = rota();
   if (!conta) { $('#main').innerHTML = telaBoasVindas(); $('#nav').innerHTML = ''; return; }
   const telas = { inicio: telaInicio, investir: telaInvestir, opcoes: telaOpcoes, pix: telaPix, perfil: telaPerfil,
     'renda-fixa': telaRendaFixa, metas: telaMetas, guardar: telaGuardar, acoes: telaAcoes, extrato: telaExtrato, dividendos: telaDividendos,
-    morning: telaMorning, renda: telaRenda, jogo: telaJogo, mundo: telaMundo, regras: telaRegras };
+    morning: telaMorning, renda: telaRenda, jogo: telaJogo, mundo: telaMundo, regras: telaRegras, delas: telaDelas };
   const f = telas[r] || telaInicio;
   $('#main').innerHTML = '<div class="demo">Modo demonstração: o saldo é fictício e nenhum dinheiro real é movimentado.</div>' + f();
   const ativo = SECAO[r] || r;
@@ -315,6 +336,11 @@ function telaInicio() {
       <a class="qa" href="#/investir"><span class="ic">${ic('trend', 26)}</span>Investir</a>
       <a class="qa" href="#/dividendos"><span class="ic">${ic('coin', 26)}</span>Dividendos</a>
     </nav>
+    <a class="card card-delas" href="#/delas">
+      <div class="row"><span class="eyebrow">Novo · espaço feminino</span>${ic('chev', 20)}</div>
+      <span style="font-family:'Anton',sans-serif;font-size:26px;text-transform:uppercase;line-height:1.1">A Bolsa é Delas</span>
+      <span class="small">Um espaço para mulheres entenderem o mercado financeiro e construírem carreira nele.</span>
+    </a>
     ${cardMorning()}
     ${cardMundo()}
     ${cardDividendos()}
@@ -708,6 +734,38 @@ function cardAgenda() {
 }
 
 /* ============ Regras e transparência ============ */
+
+// WhatsApp da Turma 9Pilla para A Bolsa é Delas: número com DDI e DDD, só dígitos (ex.: 5511999999999)
+const WHATS_DELAS = '';
+const MSG_DELAS = 'Vim através do link A BOLSA É DELAS, como faço para participar desse EVENTO?';
+function linkDelas() { return 'https://wa.me/' + WHATS_DELAS + '?text=' + encodeURIComponent(MSG_DELAS); }
+function telaDelas() {
+  const passo = (n, t, d) => `<div class="delas-passo"><span class="delas-num">${n}</span><div><strong>${t}</strong><p class="small" style="margin:4px 0 0;line-height:1.55">${d}</p></div></div>`;
+  return `<div class="delas"><header class="hdr"><div class="toprow"><a class="iconbtn" href="#/inicio" aria-label="Voltar">${ic('back', 20)}</a>${logo()}</div>
+    <span class="delas-tag">Espaço feminino 9Pilla</span>
+    <h1 class="big">A Bolsa é <span class="hl">Delas</span></h1>
+    <p class="sub">Um lugar criado para mulheres entenderem o mercado financeiro de forma intuitiva, cuidarem do próprio dinheiro e construírem carreira nessa área.</p></header>
+  <div class="wrap">
+    <section class="card"><span class="eyebrow">Por que existe</span>
+      <p class="small" style="line-height:1.6">O mercado financeiro ainda é um ambiente com poucas mulheres, tanto investindo quanto trabalhando. A Bolsa é Delas nasce para mudar isso com conversa simples, exemplos do dia a dia e uma comunidade que acolhe quem está começando.</p></section>
+    <section class="card"><span class="eyebrow">A jornada</span>
+      ${passo('01', 'Entender o mercado', 'O que é a bolsa, como os juros mexem com tudo e de onde vem o dinheiro de quem investe, sem jargão.')}
+      ${passo('02', 'Cuidar do seu dinheiro', 'Reserva de emergência, renda fixa, dividendos e metas, no seu ritmo e com segurança.')}
+      ${passo('03', 'Trabalhar na área', 'Os caminhos para quem quer fazer carreira: certificações como CPA-10, CPA-20 e CEA da ANBIMA, assessoria de investimentos e muito mais.')}
+      ${passo('04', 'Crescer juntas', 'Encontros, trocas e uma rede de mulheres que se apoiam na jornada.')}
+    </section>
+    <section class="card" style="background:var(--nude2)"><span class="eyebrow">Evento A Bolsa é Delas</span>
+      <h2 style="margin:0">Quer participar?</h2>
+      <p class="small" style="line-height:1.6">Toque no botão, a mensagem já vai pronta para a Turma 9Pilla no WhatsApp. É só enviar.</p>
+      <a class="wa" href="${linkDelas()}" target="_blank" rel="noopener">Quero participar pelo WhatsApp</a>
+      <p class="small muted" style="margin:0">Mensagem: "${esc(MSG_DELAS)}"</p>
+    </section>
+    <section class="card"><span class="eyebrow">Comece agora</span>
+      <a class="btn" href="#/investir" style="align-self:flex-start">Entender meus primeiros investimentos</a>
+      <a class="btn ghost" href="#/renda" style="align-self:flex-start">Simular uma renda todo mês</a></section>
+  </div>
+  <p class="legal">A Bolsa é Delas é um espaço educativo da 9Pilla. Conteúdo educacional, não é recomendação de investimento (Resolução CVM 20).</p></div>`;
+}
 function telaRegras() {
   const bloco = (t, l) => `<section class="card"><h2>${t}</h2>${l.map((x) => `<p class="small" style="line-height:1.6">${x}</p>`).join('')}</section>`;
   return `<header class="hdr navy"><div class="toprow"><a class="iconbtn" href="#/perfil" aria-label="Voltar">${ic('back', 20)}</a>${logo()}</div>
