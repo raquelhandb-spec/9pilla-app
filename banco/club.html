@@ -1,0 +1,135 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>9Pilla Club</title>
+<meta name="description" content="9Pilla Club: o clube seleto de membros da 9Pilla, com leitura de mercado aprofundada, encontros e comunidade. Conteúdo educativo.">
+<meta name="theme-color" content="#0B2A1B"><link rel="icon" href="/icon-192.png">
+<meta property="og:type" content="website"><meta property="og:url" content="https://9pilla-app.vercel.app/club.html">
+<meta property="og:title" content="9Pilla Club"><meta property="og:description" content="O clube seleto de membros da 9Pilla. Dinheiro não é destino. É a jornada para a liberdade.">
+<meta property="og:image" content="https://9pilla-app.vercel.app/og/og-club.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,600;1,700;1,800&family=Anton&display=swap" rel="stylesheet">
+<style>
+/* 9Pilla Club: a versão noturna e reservada da marca. Floresta profundo, menta e lima como luz, Playfair para o tom de clube. */
+:root{--noite:#071A11;--floresta:#0B2A1B;--florestaSuave:#13392A;--menta:#09C797;--lima:#7DF14E;--creme:#EFEFE4;--suave:#A9BFB3;--linha:#1F4434}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--noite);color:var(--creme);font-family:Manrope,system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.in{max-width:1120px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right))}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--lima);outline-offset:3px;border-radius:6px}
+nav{position:sticky;top:0;z-index:10;background:rgba(7,26,17,.86);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--linha)}
+nav .in{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:max(14px,env(safe-area-inset-top)) 14px}
+.marca{display:flex;align-items:baseline;gap:2px;text-decoration:none;line-height:1}
+.marca .n{font-family:"Playfair Display",serif;font-style:italic;font-weight:800;font-size:30px;color:var(--menta)}
+.marca .p{font-weight:800;font-size:23px;letter-spacing:-1px}
+.marca .c{font-family:"Playfair Display",serif;font-style:italic;font-weight:700;font-size:22px;color:var(--lima);margin-left:8px}
+.cta{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 26px;border-radius:999px;background:var(--lima);color:var(--floresta);font-weight:800;text-decoration:none;font-size:16px;white-space:nowrap}
+.cta.contorno{background:transparent;color:var(--creme);border:1.5px solid var(--linha)}
+.cta .s{transition:transform .2s}.cta:hover .s{transform:translateX(3px)}
+.heroi{position:relative;overflow:hidden}
+.heroi .in{padding-block:88px 96px;display:grid;gap:26px;position:relative;z-index:1}
+.aro{position:absolute;border-radius:50%;border:1px solid var(--linha)}
+.a1{width:720px;height:720px;right:-240px;top:-160px}.a2{width:460px;height:460px;right:-110px;top:-30px;border-color:#22543F}.a3{width:220px;height:220px;right:10px;top:90px;background:radial-gradient(circle,rgba(9,199,151,.28),transparent 70%);border:none}
+.selo{display:inline-flex;align-items:center;gap:10px;justify-self:start;font-size:12px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--lima);border:1px solid var(--linha);padding:8px 16px;border-radius:999px}
+.selo i{width:7px;height:7px;border-radius:50%;background:var(--lima)}
+h1{margin:0;font-size:clamp(48px,8.4vw,112px);line-height:.94;letter-spacing:-.05em;font-weight:800;max-width:12ch;text-wrap:balance}
+h1 em{font-family:"Playfair Display",serif;font-weight:700;color:var(--menta);letter-spacing:-.02em}
+.lead{margin:0;font-size:clamp(17px,1.8vw,21px);color:var(--suave);max-width:44ch}
+.acoes{display:flex;flex-wrap:wrap;gap:12px}
+section{padding-block:88px;border-top:1px solid var(--linha)}
+.olho{font-size:12px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--menta)}
+h2{margin:12px 0 16px;font-size:clamp(34px,5vw,58px);line-height:1;letter-spacing:-.04em;font-weight:800;text-wrap:balance;max-width:18ch}
+h2 em{font-family:"Playfair Display",serif;font-weight:700;color:var(--lima);letter-spacing:-.02em}
+.texto{margin:0;font-size:18px;color:var(--suave);max-width:52ch}
+.grade{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1px;background:var(--linha);border:1px solid var(--linha);border-radius:28px;overflow:hidden;margin-top:44px}
+.item{background:var(--noite);padding:32px 28px;display:grid;gap:10px;align-content:start}
+.item b{font-family:Anton,Impact,sans-serif;font-weight:400;font-size:44px;line-height:1;color:var(--menta)}
+.item h3{margin:0;font-size:20px;letter-spacing:-.01em}
+.item p{margin:0;font-size:15px;color:var(--suave)}
+.rotina{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:40px}
+.hora{background:var(--floresta);border-radius:24px;padding:26px;display:grid;gap:6px}
+.hora strong{font-family:Anton,Impact,sans-serif;font-weight:400;font-size:40px;color:var(--lima);line-height:1}
+.hora span{font-weight:700}
+.hora p{margin:0;font-size:14px;color:var(--suave)}
+.compare{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:40px}
+.plano{border:1px solid var(--linha);border-radius:28px;padding:32px;display:grid;gap:14px;align-content:start}
+.plano.club{background:var(--floresta);border-color:var(--menta);box-shadow:0 30px 80px -40px rgba(9,199,151,.45)}
+.plano h3{margin:0;font-size:24px}
+.plano .etq{font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--suave)}
+.plano.club .etq{color:var(--lima)}
+.plano ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.plano li{display:grid;grid-template-columns:22px 1fr;gap:10px;font-size:15px}
+.plano li::before{content:"";width:18px;height:18px;border-radius:50%;margin-top:3px;background:var(--linha)}
+.plano.club li::before{background:var(--menta) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230B2A1B' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12.5l4 4 8-9'/%3E%3C/svg%3E") center/11px no-repeat}
+.citacao{font-family:"Playfair Display",serif;font-style:italic;font-weight:600;font-size:clamp(28px,4vw,48px);line-height:1.15;max-width:22ch;margin:0}
+.citacao em{color:var(--lima);font-style:italic}
+.final .in{display:grid;gap:22px;justify-items:start}
+.passos{display:grid;gap:10px;margin:0;padding-left:22px;color:var(--suave);font-size:16px}
+.passos b{color:var(--creme)}
+.copiado{font-size:14px;color:var(--lima);min-height:1.2em;margin:0}
+footer{border-top:1px solid var(--linha);padding-block:30px 44px;font-size:12.5px;color:#7F988B}
+footer .in{display:grid;gap:10px}
+footer a{color:var(--suave)}
+@media(prefers-reduced-motion:no-preference){.heroi h1,.heroi .lead,.heroi .acoes{animation:sobe .8s cubic-bezier(.2,.8,.2,1) both}.heroi .lead{animation-delay:.1s}.heroi .acoes{animation-delay:.2s}}
+@keyframes sobe{from{opacity:0;transform:translateY(18px)}}
+</style></head><body>
+<nav><div class="in"><a class="marca" href="/site.html" aria-label="9Pilla Club"><span class="n">9</span><span class="p">Pilla</span><span class="c">Club</span></a><a class="cta js-entrar" href="#entrar">Quero ser membro <span class="s" aria-hidden="true">→</span></a></div></nav>
+
+<header class="heroi"><div class="aro a1" aria-hidden="true"></div><div class="aro a2" aria-hidden="true"></div><div class="aro a3" aria-hidden="true"></div>
+<div class="in">
+<span class="selo"><i></i>Clube seleto de membros</span>
+<h1>Poucos lugares. <em>Muito</em> mercado.</h1>
+<p class="lead">O 9Pilla Club é o espaço reservado de quem leva a jornada financeira a sério: leitura de mercado aprofundada todos os dias, encontros fechados e uma comunidade que cresce junta.</p>
+<div class="acoes"><a class="cta js-entrar" href="#entrar">Quero ser membro <span class="s" aria-hidden="true">→</span></a><a class="cta contorno" href="#beneficios">Ver o que está incluído</a></div>
+</div></header>
+
+<section id="beneficios"><div class="in">
+<span class="olho">O que está incluído</span>
+<h2>Tudo o que a 9Pilla tem de <em>mais profundo</em>.</h2>
+<p class="texto">O conteúdo aberto da 9Pilla ensina o caminho. No Club, você entende o porquê de cada movimento, com método e contexto.</p>
+<div class="grade">
+<div class="item"><b>01</b><h3>Morning Call do Club</h3><p>A leitura diária aprofundada: cenários condicionais, cadeias de dados macro e o que observar no pregão, unindo Brasil, geopolítica e Estados Unidos.</p></div>
+<div class="item"><b>02</b><h3>Fechamento comentado</h3><p>O que moveu o mercado no dia, explicado com calma, para você fechar o dia entendendo e não só lendo manchete.</p></div>
+<div class="item"><b>03</b><h3>Encontros fechados</h3><p>Aulões e conversas exclusivas para membros, com Raquel Amorim e convidados do mercado.</p></div>
+<div class="item"><b>04</b><h3>Trilha de opções</h3><p>Conceitos, gregas e estratégias explicados do zero, com simulações. Educação, não sinal de compra ou venda.</p></div>
+<div class="item"><b>05</b><h3>A Bolsa é Delas</h3><p>Prioridade nos encontros do espaço feminino da 9Pilla e na rede de mulheres do mercado.</p></div>
+<div class="item"><b>06</b><h3>Comunidade seleta</h3><p>Um grupo menor, com troca de qualidade, sem ruído e com regras claras de convivência.</p></div>
+</div></div></section>
+
+<section><div class="in">
+<span class="olho">O ritmo do Club</span>
+<h2>Um dia de membro, <em>na prática</em>.</h2>
+<div class="rotina">
+<div class="hora"><strong>09h09</strong><span>Morning Call do Club</span><p>Termômetro, agenda econômica e os cenários do dia.</p></div>
+<div class="hora"><strong>12h</strong><span>Edição de almoço</span><p>O que mudou na manhã, em poucos minutos.</p></div>
+<div class="hora"><strong>18h</strong><span>Fechamento comentado</span><p>Os fatos que moveram o pregão, com contexto.</p></div>
+<div class="hora"><strong>Mensal</strong><span>Encontro de membros</span><p>Aula ao vivo, perguntas e trocas.</p></div>
+</div></div></section>
+
+<section><div class="in">
+<span class="olho">Aberto x Club</span>
+<h2>A 9Pilla é para todos. O Club é para quem quer <em>ir além</em>.</h2>
+<div class="compare">
+<div class="plano"><span class="etq">Turma 9Pilla · gratuita</span><h3>Para começar</h3><ul><li>Morning Call diário</li><li>9Pilla APP educativo</li><li>Ebook Ações sem Mistério</li><li>Comunidade aberta</li></ul></div>
+<div class="plano club"><span class="etq">9Pilla Club · membros</span><h3>Para aprofundar</h3><ul><li>Tudo da Turma 9Pilla</li><li>Morning Call do Club com cenários condicionais</li><li>Fechamento comentado e edição de almoço</li><li>Encontros e aulões exclusivos</li><li>Trilha de opções do zero</li><li>Prioridade em A Bolsa é Delas</li><li>Grupo reservado e seleto</li></ul>
+<a class="cta js-entrar" href="#entrar" style="justify-self:start">Quero ser membro <span class="s" aria-hidden="true">→</span></a></div>
+</div></div></section>
+
+<section><div class="in"><p class="citacao">"Dinheiro não é destino. É a jornada para a <em>liberdade</em>."</p><p class="texto" style="margin-top:14px">Raquel Amorim, fundadora da 9Pilla</p></div></section>
+
+<section class="final" id="entrar"><div class="in">
+<span class="olho">Como entrar</span>
+<h2>As vagas são <em>limitadas</em>.</h2>
+<ol class="passos"><li>Toque no botão abaixo. A mensagem de interesse é copiada automaticamente.</li><li>Entre no grupo da <b>Turma 9Pilla</b> no WhatsApp e cole a mensagem.</li><li>Você recebe o valor da mensalidade, as regras do Club e o link de entrada.</li></ol>
+<a class="cta" id="wa" href="https://chat.whatsapp.com/Ly0K34qNxdT75boi9g4eOF" target="_blank" rel="noopener">Quero entrar no 9Pilla Club <span class="s" aria-hidden="true">→</span></a>
+<p class="copiado" id="copiado" aria-live="polite"></p>
+</div></section>
+
+<footer><div class="in">
+<p>O 9Pilla Club oferece conteúdo exclusivamente educacional e informativo, nos termos da Resolução CVM nº 20/2021. Não há recomendação, oferta ou solicitação de compra ou venda de ativos, nem promessa de rentabilidade. Rentabilidade passada não garante resultados futuros. O investidor é o único responsável por suas escolhas financeiras.</p>
+<p><a href="/site.html">9Pilla APP</a> · <a href="/delas.html">A Bolsa é Delas</a> · <a href="/ebook.html?origem=club">Ebook grátis</a></p>
+</div></footer>
+<script>
+var MSG='Vim através do link do 9PILLA CLUB e quero ser membro. Como faço para entrar?';
+document.getElementById('wa').addEventListener('click',function(){try{navigator.clipboard.writeText(MSG).then(function(){document.getElementById('copiado').textContent='Mensagem copiada. Cole no grupo e envie.'}).catch(function(){})}catch(e){}});
+</script>
+</body></html>
