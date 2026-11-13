@@ -1,7 +1,7 @@
 {
-  "name": "9Pilla",
+  "name": "9Pilla APP",
   "short_name": "9Pilla",
-  "description": "Banco de investimentos educativo: entenda o mercado e faça seu dinheiro render.",
+  "description": "App educativo de investimentos: entenda o mercado e veja como o dinheiro pode render.",
   "lang": "pt-BR",
   "start_url": "./#/inicio",
   "scope": "./",
